@@ -11,6 +11,15 @@ const nav = $('nav');
 const onScroll = () => nav.classList.toggle('is-scrolled', scrollY > 8);
 addEventListener('scroll', onScroll, {passive:true}); onScroll();
 
+/* Abschnitte: Überschrift, Text, Inhalt treten nacheinander ein */
+if(!reduce && 'IntersectionObserver' in window){
+  window.__rv=true;
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }),{rootMargin:'0px 0px -12% 0px'});
+  document.querySelectorAll('.band').forEach(sec=>{
+    sec.querySelectorAll('.head h2, .head .lede, .flow__step, .opts, .ticket, form, .mail, .faq > div:first-child, .faq__list').forEach((el,i)=>{ el.classList.add('rv'); el.style.setProperty('--i',i); io.observe(el); });
+  });
+} else document.documentElement.classList.remove('js');
+
 /* ---------- Konfigurator (PLATZHALTERPREISE: hier anpassen) ---------- */
 const PREISE = {
   groesse: { 10:{basis:79, weiterePerson:49}, 15:{basis:119, weiterePerson:69}, 20:{basis:159, weiterePerson:89}, 25:{basis:209, weiterePerson:119} },
@@ -80,7 +89,7 @@ function buildMail(fromSubmit){
     $('eName').textContent = okName?'':'Bitte gib deinen Namen ein.';
     $('eMail').textContent = okMail?'':'Bitte gib eine gültige E-Mail-Adresse ein, zum Beispiel name@beispiel.de.';
   }
-  if(!(okName&&okMail)){ if(fromSubmit) $('status').textContent=''; return; }
+  if(!(okName&&okMail)){ if(fromSubmit){ $('status').textContent=''; (okName?form.email:form.name).focus(); } return; }
   if(!fromSubmit && !mailReady) return;
   const {total}=calc();
   const d=form.termin.value?new Date(form.termin.value).toLocaleDateString('de-DE'):'flexibel';
@@ -160,7 +169,6 @@ origImg.src='img/hero.jpg'; origImg.alt='Beispielfoto';
 /* Schritt 3: die Beispielfigur druckt sich, sobald der Abschnitt sichtbar wird */
 const printed=$('printed');
 new IntersectionObserver((es,o)=>{ if(es[0].isIntersecting){ printed.classList.add('run'); o.disconnect(); } },{threshold:.5}).observe(printed);
-printed.addEventListener('click',()=>{ printed.classList.remove('run'); void printed.offsetWidth; printed.classList.add('run'); });
 
 /* ---------- 3D-Druckplatte im Hero ---------- */
 const studio = (function(){
@@ -270,6 +278,10 @@ const studio = (function(){
   stage.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;stage.setPointerCapture(e.pointerId)});
   stage.addEventListener('pointermove',e=>{ if(!dragging) return; const dx=e.clientX-lastX; lastX=e.clientX; vel=dx*.008; rotY+=vel; idle=0; $('hint').hidden=true; });
   const end=()=>{dragging=false}; stage.addEventListener('pointerup',end); stage.addEventListener('pointercancel',end);
+  stage.addEventListener('keydown',e=>{ if(e.key==='ArrowLeft'||e.key==='ArrowRight'){ e.preventDefault(); vel=0; rotY+=e.key==='ArrowLeft'?-.25:.25; idle=0; } });
+  let spinning=!reduce; const spinBtn=$('spinBtn');
+  const setSpin=v=>{ spinning=v; spinBtn.setAttribute('aria-pressed',String(!v)); spinBtn.textContent=v?'Drehung anhalten':'Drehung starten'; };
+  setSpin(spinning); spinBtn.onclick=()=>setSpin(!spinning);
 
   function startPrint(){ printing=true; pStart=performance.now(); ring.visible=nozzle.visible=true; $('printBtn').disabled=true; }
   $('printBtn').onclick=startPrint;
@@ -285,7 +297,7 @@ const studio = (function(){
     requestAnimationFrame(loop);
     const dt=Math.min(.05,(t-last)/1000); last=t;
     if(!visible) return;
-    if(!dragging){ vel*=.93; rotY+=vel; idle+=dt; if(!reduce && idle>.6) rotY+=dt*.3; }
+    if(!dragging){ vel*=.93; rotY+=vel; idle+=dt; if(spinning && idle>.6) rotY+=dt*.3; }
     fig.rotation.y=rotY;
     if(printing){
       const k=Math.min(1,(t-pStart)/P_DUR), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
