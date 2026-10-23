@@ -141,6 +141,18 @@ input[type=range]{accent-color:var(--gold-lo);width:100%}
 @keyframes rise{0%{opacity:1;bottom:0}99%{opacity:1}100%{opacity:0;bottom:100%}}
 .note{font-size:var(--t-xs);color:var(--stein);margin-top:var(--s3)}
 
+/* Galerie: echte Drucke, zwei Zeilen gegengleich */
+.gallery{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--s6) var(--s4)}
+.shot{margin:0;display:flex;flex-direction:column;gap:var(--s3);min-width:0}
+.shot img{width:100%;height:100%;object-fit:cover;background:var(--marmor-2)}
+.shot--a{grid-column:1/6}.shot--b{grid-column:6/13}
+.shot--c{grid-column:1/8}.shot--d{grid-column:8/13}
+.shot--a img,.shot--d img{aspect-ratio:3/4}
+.shot--b img,.shot--c img{aspect-ratio:auto;flex:1;min-height:0}
+.shot figcaption{font-size:var(--t-s);color:var(--anthrazit)}
+.band--dark .shot figcaption{color:var(--nacht-text)}
+@media (max-width:760px){.gallery{grid-template-columns:1fr 1fr}.shot--a,.shot--d{grid-column:span 1}.shot--b,.shot--c{grid-column:1/-1}.shot--b{order:-2}.shot--c{order:-1}.shot--b img,.shot--c img{aspect-ratio:4/3}}
+
 /* Konfigurator */
 .config{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,1fr);gap:var(--s12);align-items:start}
 @media (max-width:960px){.config{grid-template-columns:1fr}}
