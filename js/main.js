@@ -173,7 +173,7 @@ const studio = (function(){
   const C={base:mat(0x1E1E1E,{roughness:.45})};
   const MODELS={
     figur:{url:'models/handwerker-farbe.glb',rot:-1.45,sockel:false,textured:true},
-    drache:{url:'models/drache.glb',rot:-.35,sockel:false,
+    drache:{url:'models/drache.glb',rot:Math.PI-.3,sockel:false,
       fil:[mat(0xEFE4A8,{roughness:.55}),mat(0x1A1A1A,{roughness:.6}),mat(0x6E7C4F,{roughness:.6}),mat(0xC7342E,{roughness:.45})]}
   };
 
