@@ -137,46 +137,6 @@ $('copyAddr').onclick=e=>copy(ADDR,e.currentTarget,$('addr'));
 $('copyMail').onclick=e=>copy($('mailText').textContent,e.currentTarget,$('mailText'));
 $('mailto').addEventListener('click',()=>{$('status').textContent='Kein Mailprogramm geöffnet? Kopiere den Text und schick ihn an info@winheller-3d.com.'});
 
-/* ---------- Foto-Check ---------- */
-const origImg=$('origImg'), toon=$('toon'), levels=$('levels');
-let srcImage=null;
-origImg.onload=()=>{srcImage=origImg; origImg.hidden=false; $('drop').classList.add('has-img'); renderToon();};
-function renderToon(){
-  if(!srcImage) return;
-  const W=480, H=600; toon.width=W; toon.height=H;
-  const c=toon.getContext('2d',{willReadFrequently:true});
-  const iw=srcImage.naturalWidth, ih=srcImage.naturalHeight, s=Math.max(W/iw,H/ih), dw=iw*s, dh=ih*s;
-  c.fillStyle='#F3F1ED'; c.fillRect(0,0,W,H);
-  c.filter='saturate(1.25) contrast(1.15) blur(1.2px)';
-  c.drawImage(srcImage,(W-dw)/2,(H-dh)/2,dw,dh); c.filter='none';
-  const L=+levels.value, step=255/(L-1);
-  const d=c.getImageData(0,0,W,H), p=d.data;
-  for(let i=0;i<p.length;i+=4){ p[i]=Math.round(p[i]/step)*step; p[i+1]=Math.round(p[i+1]/step)*step; p[i+2]=Math.round(p[i+2]/step)*step; }
-  const lum=new Float32Array(W*H); for(let i=0,j=0;i<p.length;i+=4,j++) lum[j]=p[i]*.3+p[i+1]*.59+p[i+2]*.11;
-  for(let y=1;y<H-1;y++) for(let x=1;x<W-1;x++){ const j=y*W+x, g=Math.abs(lum[j+1]-lum[j-1])+Math.abs(lum[j+W]-lum[j-W]); if(g>70){ const i=j*4; p[i]*=.35;p[i+1]*=.35;p[i+2]*=.35; } }
-  c.putImageData(d,0,0);
-  c.globalAlpha=.07; c.fillStyle='#000'; for(let y=0;y<H;y+=3) c.fillRect(0,y,W,1); c.globalAlpha=1;
-  $('levelsOut').textContent=L;
-}
-levels.addEventListener('input',renderToon);
-function handleFile(f){
-  if(!f) return;
-  if(!f.type.startsWith('image/')){ $('status').textContent=''; alert('Das ist kein Bild. Bitte wähle ein JPG oder PNG.'); return; }
-  const r=new FileReader();
-  r.onload=()=>{ origImg.src=r.result; origImg.alt='Dein Foto'; $('sampleTag').hidden=true; };
-  r.readAsDataURL(f);
-}
-$('file').addEventListener('change',e=>handleFile(e.target.files[0]));
-const drop=$('drop');
-['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')}));
-['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over')}));
-drop.addEventListener('drop',e=>handleFile(e.dataTransfer.files[0]));
-origImg.src='img/hero.jpg'; origImg.alt='Beispielfoto';
-
-/* Schritt 3: die Beispielfigur druckt sich, sobald der Abschnitt sichtbar wird */
-const printed=$('printed');
-new IntersectionObserver((es,o)=>{ if(es[0].isIntersecting){ printed.classList.add('run'); o.disconnect(); } },{threshold:.5}).observe(printed);
-
 /* ---------- 3D-Druckplatte im Hero ---------- */
 const studio = (function(){
   const stage=$('stage');
@@ -209,33 +169,60 @@ const studio = (function(){
   const clip=new THREE.Plane(new THREE.Vector3(0,-1,0),100);
   const mats=[];
   function mat(color,opt){ const mm=new THREE.MeshStandardMaterial(Object.assign({color,roughness:.7,metalness:0,clippingPlanes:[clip],clipShadows:true,side:THREE.DoubleSide},opt||{})); mm.userData.orig={color:new THREE.Color(color),roughness:mm.roughness,metalness:mm.metalness}; mats.push(mm); return mm; }
-  // Filamentfarben der echten Handwerker-Figur (Anycubic Kobra X, 4 Farben), für Licht im Browser abgestimmt
-  const C={
-    haut:mat(0xB8724C,{roughness:.55}),
-    schwarz:mat(0x1C1B1A,{roughness:.7}),
-    weiss:mat(0xF2EFEA,{roughness:.5}),
-    grau:mat(0xA5A39E,{roughness:.55}),
-    base:mat(0x1E1E1E,{roughness:.45})
+  // Echte Druckmodelle (aus den 3MF-Dateien reduziert), Farben je Filament für Licht im Browser abgestimmt
+  const C={base:mat(0x1E1E1E,{roughness:.45})};
+  const MODELS={
+    figur:{url:'models/handwerker-farbe.glb',rot:-1.45,sockel:false,textured:true},
+    drache:{url:'models/drache.glb',rot:-.35,sockel:false,
+      fil:[mat(0xEFE4A8,{roughness:.55}),mat(0x1A1A1A,{roughness:.6}),mat(0x6E7C4F,{roughness:.6}),mat(0xC7342E,{roughness:.45})]}
   };
-  const FIL=[C.haut,C.schwarz,C.weiss,C.grau];
 
   const fig=new THREE.Group(); scene.add(fig);
   const box=(w,h,d)=>new THREE.BoxGeometry(w,h,d);
-  // Runder schwarzer Sockel wie bei den gedruckten Figuren
+  // Runder schwarzer Sockel wie bei den gedruckten Figuren (der Drache bringt seinen eigenen mit)
   const sockel=new THREE.Mesh(new THREE.CylinderGeometry(5,5.15,.8,96),C.base); sockel.position.y=.4; sockel.castShadow=sockel.receiveShadow=true; fig.add(sockel);
 
-  // Echtes Druckmodell (aus dem 3MF reduziert): Höhe 150 mm -> 15 Einheiten, steht auf dem Sockel
-  let ready=false, onReady=()=>{};
-  new THREE.GLTFLoader().load('models/handwerker.glb',gltf=>{
-    const model=gltf.scene; model.scale.setScalar(.1); model.position.y=.8;
-    model.traverse(o=>{
-      if(!o.isMesh) return;
-      const k=parseInt((o.name.match(/(\d)$/)||[,1])[1],10)-1;
-      o.geometry.computeVertexNormals();
-      o.material=FIL[k]||C.schwarz; o.castShadow=true; o.receiveShadow=true;
+  const loader=new THREE.GLTFLoader(), cache={};
+  let current=null, ready=false, onReady=()=>{};
+  function load(key,cb){
+    if(cache[key]) return cb(cache[key]);
+    const M=MODELS[key];
+    loader.load(M.url,gltf=>{
+      const model=gltf.scene;
+      model.traverse(o=>{
+        if(!o.isMesh) return;
+        if(M.textured){
+          // Textur-Modell (z. B. aus Tripo): Farbbild behalten, Schnittebene für die Druck-Animation dazu
+          const tm=mat(0xffffff,{roughness:.75}); tm.map=o.material.map; tm.userData.map=tm.map; o.material=tm;
+          if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
+        } else {
+          const k=parseInt((o.name.match(/(\d)$/)||[,1])[1],10)-1;
+          o.geometry.computeVertexNormals();
+          o.material=M.fil[k]||M.fil[1];
+        }
+        o.castShadow=true; o.receiveShadow=true;
+      });
+      // auf 15 cm Figurenhöhe bringen
+      const b0=new THREE.Box3().setFromObject(model); model.scale.multiplyScalar(15/(b0.max.y-b0.min.y));
+      // auf dem Sockel bzw. Boden mittig ausrichten
+      const bb=new THREE.Box3().setFromObject(model), c=bb.getCenter(new THREE.Vector3());
+      model.position.set(-c.x,(M.sockel?.8:0)-bb.min.y,-c.z);
+      M.h=(M.sockel?.8:0)+(bb.max.y-bb.min.y);
+      cache[key]=model; cb(model);
+    },undefined,()=>{ stage.classList.add('is-error'); });
+  }
+  function show(key,print){
+    load(key,model=>{
+      if(current) fig.remove(current);
+      current=model; fig.add(model);
+      const M=MODELS[key]; sockel.visible=M.sockel;
+      const fin=document.querySelector('[data-finish][aria-pressed="true"]'); if(fin) mats.forEach(finishes[fin.dataset.finish]); FIG_H=M.h; rotY=M.rot; vel=0;
+      document.querySelectorAll('[data-model]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.model===key)));
+      if(!ready){ ready=true; onReady(); } else if(print) startPrint();
     });
-    fig.add(model); ready=true; onReady();
-  },undefined,()=>{ stage.classList.add('is-error'); });
+  }
+  document.querySelectorAll('[data-model]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.model,true)));
+  show('figur');
 
   // Druckdüse / Lage-Ring
   const ring=new THREE.Mesh(new THREE.TorusGeometry(5.8,.06,8,96),new THREE.MeshBasicMaterial({color:0xD5A34A}));
@@ -244,7 +231,7 @@ const studio = (function(){
   const nz=new THREE.Mesh(new THREE.ConeGeometry(.35,.9,16),new THREE.MeshStandardMaterial({color:0xD5A34A,metalness:.8,roughness:.3})); nz.rotation.x=Math.PI; nozzle.add(nz);
   const nzb=new THREE.Mesh(box(1.4,1,1.4),new THREE.MeshStandardMaterial({color:0x3A3939,roughness:.5})); nzb.position.y=.9; nozzle.add(nzb);
 
-  const FIG_H=15.8; let sizeCm=15, printing=false, pStart=0; const P_DUR=reduce?1:5200;
+  let FIG_H=15.8; let sizeCm=15, printing=false, pStart=0; const P_DUR=reduce?1:5200;
   function setHud(h){
     const k=Math.max(0,Math.min(1,h/FIG_H));
     $('hVal').textContent=(k*sizeCm).toFixed(1).replace('.',',');
@@ -254,9 +241,9 @@ const studio = (function(){
   api.setSize=cm=>{sizeCm=cm; if(!printing) setHud(FIG_H);};
 
   const finishes={
-    farbe:mm=>{mm.color.copy(mm.userData.orig.color);mm.roughness=mm.userData.orig.roughness;mm.metalness=mm.userData.orig.metalness},
-    gold:mm=>{ if(mm===C.base){finishes.farbe(mm);return} mm.color.set(0xD5A34A);mm.roughness=.32;mm.metalness=.85},
-    weiss:mm=>{ if(mm===C.base){finishes.farbe(mm);return} mm.color.set(0xF3F1ED);mm.roughness=.55;mm.metalness=0}
+    farbe:mm=>{mm.color.copy(mm.userData.orig.color);mm.roughness=mm.userData.orig.roughness;mm.metalness=mm.userData.orig.metalness;if(mm.userData.map){mm.map=mm.userData.map;mm.needsUpdate=true}},
+    gold:mm=>{ if(mm===C.base){finishes.farbe(mm);return} if(mm.map){mm.map=null;mm.needsUpdate=true} mm.color.set(0xD5A34A);mm.roughness=.32;mm.metalness=.85},
+    weiss:mm=>{ if(mm===C.base){finishes.farbe(mm);return} if(mm.map){mm.map=null;mm.needsUpdate=true} mm.color.set(0xF3F1ED);mm.roughness=.55;mm.metalness=0}
   };
   document.querySelectorAll('[data-finish]').forEach(b=>b.addEventListener('click',()=>{
     document.querySelectorAll('[data-finish]').forEach(x=>x.setAttribute('aria-pressed',x===b));

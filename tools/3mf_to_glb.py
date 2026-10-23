@@ -6,6 +6,7 @@ from scipy.spatial import cKDTree
 
 src, dst = sys.argv[1], sys.argv[2]
 TARGET = int(sys.argv[3]) if len(sys.argv) > 3 else 120_000
+DEFAULT = int(sys.argv[4]) - 1 if len(sys.argv) > 4 else 0   # Filament für unbemalte Dreiecke (Objekt-Extruder)
 
 z = zipfile.ZipFile(src)
 name = next(n for n in z.namelist() if n.startswith('3D/Objects/') and n.endswith('.model'))
@@ -20,7 +21,7 @@ F = np.array([t[:3] for t in tris], dtype=np.int64)
 # Unterteilte Dreiecke tragen längere Codes: dort zählt das häufigste Einzel-Filament.
 CODE = {'4': 0, '8': 1, '0C': 2, '1C': 3}
 def fil(code):
-    if not code: return 0
+    if not code: return DEFAULT
     if code in CODE: return CODE[code]
     counts = [code.count('4'), code.count('8')]
     return int(np.argmax(counts))

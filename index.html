@@ -14,7 +14,7 @@
 <link rel="preload" href="css/fonts/BarlowCondensed-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/style.css">
-<link rel="preload" href="models/handwerker.glb" as="fetch" type="model/gltf-binary" crossorigin>
+<link rel="preload" href="models/handwerker-farbe.glb" as="fetch" type="model/gltf-binary" crossorigin>
 <script>document.documentElement.classList.add('js');setTimeout(function(){if(!window.__rv)document.documentElement.classList.remove('js')},2500)</script>
 </head>
 <body>
@@ -68,11 +68,13 @@
         <div class="readout glass" id="readout" hidden aria-hidden="true">Druckhöhe<b class="num"><span id="hVal">0,0</span> <small>cm</small></b><span id="hOf">von 15 cm</span><span class="bar"><i id="hBar"></i></span></div>
       </div>
           <div class="dock" id="dock" hidden>
+          <div class="dock__row" role="group" aria-label="Figur wählen"><button class="chip chip--model" type="button" data-model="figur" aria-pressed="true">Handwerker</button><button class="chip chip--model" type="button" data-model="drache" aria-pressed="false">Drache &amp; Hund</button></div>
+          <div class="dock__row" role="group" aria-label="Ausführung und Druck">
           <button class="chip" type="button" data-finish="farbe" aria-pressed="true"><i style="background:conic-gradient(#c98b62 0 50%,#2d2c2b 0)"></i>Vollfarbe</button>
           <button class="chip" type="button" data-finish="gold" aria-pressed="false"><i style="background:#D5A34A"></i>Gold</button>
           <button class="chip" type="button" data-finish="weiss" aria-pressed="false"><i style="background:#F3F1ED"></i>Marmor-Weiß</button>
           <button class="chip" type="button" id="spinBtn" aria-pressed="false">Drehung anhalten</button>
-          <button class="chip" type="button" id="printBtn">Nochmal drucken</button>
+          <button class="chip" type="button" id="printBtn">Nochmal drucken</button></div>
         </div>
       </div>
     </div>
@@ -82,34 +84,23 @@
     <div class="wrap">
       <div class="head">
         <h2 id="ablauf-h">Vom Foto zur Figur</h2>
-        <p class="lede">Drei Schritte, und bei jedem siehst du, was passiert. Probier den ersten gleich aus: Leg ein Foto ab und schau, wie es im Figuren-Look wirkt.</p>
+        <p class="lede">Drei Schritte vom Handyfoto bis zur Figur in der Geschenkbox. So sieht das an einem Beispiel aus.</p>
       </div>
       <ol class="flow">
         <li class="flow__step">
           <h3>Foto schicken</h3>
           <p>Ganze Person, gutes Licht, gern zusätzlich von der Seite. Handyfotos reichen.</p>
-          <div class="flow__media">
-            <img id="origImg" alt="Dein Foto" hidden>
-            <label class="drop" id="drop" for="file">
-              <svg width="44" height="44" viewBox="0 0 52 52" fill="none" stroke="#3A3939" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="15" width="40" height="27" rx="3"/><path d="M18 15l3-5h10l3 5"/><circle cx="26" cy="28" r="8"/></svg>
-              <span><b>Foto hierher ziehen</b><br><span class="note">oder tippen, um eins auszuwählen</span></span>
-              <input type="file" id="file" accept="image/*">
-            </label>
-            <span class="tag" id="sampleTag">Beispiel</span>
-            <label class="btn btn--s btn--dark pick" for="file">Eigenes Foto wählen</label>
-          </div>
-          <p class="note">Dein Foto bleibt in deinem Browser. Hier wird nichts hochgeladen.</p>
+          <figure class="flow__media"><img src="img/schritt-1.webp" alt="Beispielfoto: Mann im grünen Hoodie mit Kaffeebecher im Park" width="1200" height="1540" loading="lazy"><span class="tag">Dein Foto</span></figure>
         </li>
         <li class="flow__step">
           <h3>Vorschau ansehen</h3>
           <p>Wir modellieren Pose, Kleidung und Lieblingsdetail. Du bekommst eine Vorschau und gibst sie frei.</p>
-          <div class="flow__media"><canvas id="toon" aria-label="Dein Foto im Figuren-Look"></canvas></div>
-          <div class="slider"><label for="levels">Farbstufen</label><input type="range" id="levels" min="2" max="8" value="4"><output id="levelsOut" for="levels" class="num">4</output></div>
+          <figure class="flow__media"><img src="img/schritt-2.webp" alt="3D-Vorschau der Figur im Modellierprogramm: Mann im Hoodie mit Kaffeebecher auf Sockel" width="1200" height="1540" loading="lazy"><span class="tag">Deine Vorschau</span></figure>
         </li>
         <li class="flow__step">
           <h3>Gedruckt und verschickt</h3>
           <p>Erst nach deiner Freigabe geht die Figur in den Drucker. Danach kommt sie gut verpackt zu dir.</p>
-          <div class="flow__media"><div class="printed" id="printed"><img src="img/figur-handwerker.webp" alt="Gedruckte Handwerker-Figur, die sich Schicht für Schicht aufbaut" width="1200" height="1600" loading="lazy"><i class="head-line"></i></div></div>
+          <figure class="flow__media"><img src="img/schritt-3.webp" alt="Fertige Figur im Hoodie mit Kaffeebecher in einer schwarzen Geschenkbox" width="1200" height="1540" loading="lazy"><span class="tag">Deine Figur</span></figure>
         </li>
       </ol>
     </div>
