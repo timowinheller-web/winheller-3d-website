@@ -45,6 +45,7 @@
 
 <main id="top">
   <section class="hero" aria-labelledby="claim">
+    <div class="backdrop backdrop--hero" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="wrap hero__in">
       <div class="hero__copy">
         <h1 class="claim" id="claim"><span class="claim__a">Dein Bild.</span><span class="claim__b">Unser Werk.</span></h1>
@@ -53,7 +54,7 @@
           <a class="btn" href="#anfrage">Figur anfragen</a>
           <a class="btn btn--line" href="#preise">Preis berechnen</a>
         </div>
-        <div class="hero__facts">
+        <div class="hero__facts glass">
           <p><b>Vorschau</b>bevor gedruckt wird</p>
           <p><b>10 bis 25 cm</b>allein, als Paar, als Familie</p>
           <p><b>Unikat</b>für genau einen Menschen</p>
@@ -62,8 +63,8 @@
       <div class="hero__media">
       <div class="stage" id="stage" tabindex="0" role="group" aria-roledescription="3D-Ansicht" aria-label="3D-Modell einer Beispielfigur. Zum Drehen ziehen oder Pfeiltasten nutzen.">
         <div class="stage__fallback" id="fallback"><img src="img/figur-handwerker.webp" alt="3D-gedruckte Figur eines Handwerkers mit Hammer" width="1200" height="1600" fetchpriority="high"></div>
-        <p class="hint" id="hint" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>Ziehen zum Drehen</p>
-        <div class="readout" id="readout" hidden aria-hidden="true">Druckhöhe<b class="num"><span id="hVal">0,0</span> <small>cm</small></b><span id="hOf">von 15 cm</span><span class="bar"><i id="hBar"></i></span></div>
+        <p class="hint glass" id="hint" hidden><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3"/><path d="M18 3v4h-4M6 21v-4h4"/></svg>Ziehen zum Drehen</p>
+        <div class="readout glass" id="readout" hidden aria-hidden="true">Druckhöhe<b class="num"><span id="hVal">0,0</span> <small>cm</small></b><span id="hOf">von 15 cm</span><span class="bar"><i id="hBar"></i></span></div>
       </div>
           <div class="dock" id="dock" hidden>
           <button class="chip" type="button" data-finish="farbe" aria-pressed="true"><i style="background:conic-gradient(#c98b62 0 50%,#2d2c2b 0)"></i>Vollfarbe</button>
@@ -114,21 +115,23 @@
   </section>
 
   <section class="band band--dark" id="figuren" aria-labelledby="figuren-h">
+    <div class="backdrop backdrop--figuren" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="wrap">
       <div class="head">
         <h2 id="figuren-h">Frisch aus dem Drucker</h2>
         <p class="lede">So sehen unsere Figuren in echt aus: mehrfarbig gedruckt, mit feinen Schichtlinien und Details bis zur Gürtelschnalle.</p>
       </div>
       <div class="gallery">
-        <figure class="shot shot--a"><img src="img/figur-handwerker.webp" alt="3D-gedruckte Figur eines Handwerkers mit Schnurrbart, grauem Shirt, Arbeitshose und Hammer in der Hand" width="1200" height="1600" loading="lazy"><figcaption>Der Handwerker, mit Hammer und Werkzeughose</figcaption></figure>
-        <figure class="shot shot--b"><img src="img/figur-drache-hund.webp" alt="3D-gedruckter grüner Drache mit blonden Haaren und Flügeln, der einen schwarzen Hund an der Leine führt, auf rundem Sockel" width="1600" height="1200" loading="lazy"><figcaption>Drachendame mit Hund, zwei Figuren auf einem Sockel</figcaption></figure>
-        <figure class="shot shot--c"><img src="img/figur-drache-hund-seite.webp" alt="Dieselbe Drachenfigur mit Hund von der Seite, mit Flügeln und Herzschwanz" width="1600" height="1200" loading="lazy"><figcaption>Von der Seite: Flügel, Herzschwanz, Kette am Halsband</figcaption></figure>
-        <figure class="shot shot--d"><img src="img/figur-smoking.webp" alt="3D-gedruckte Figur eines Mannes mit blonden Haaren im schwarzen Smoking mit weißer Fliege" width="1200" height="1600" loading="lazy"><figcaption>Im Smoking, zum Beispiel für die Hochzeitstorte</figcaption></figure>
+        <figure class="shot glass-cap shot--a"><img src="img/figur-handwerker.webp" alt="3D-gedruckte Figur eines Handwerkers mit Schnurrbart, grauem Shirt, Arbeitshose und Hammer in der Hand" width="1200" height="1600" loading="lazy"><figcaption>Der Handwerker, mit Hammer und Werkzeughose</figcaption></figure>
+        <figure class="shot glass-cap shot--b"><img src="img/figur-drache-hund.webp" alt="3D-gedruckter grüner Drache mit blonden Haaren und Flügeln, der einen schwarzen Hund an der Leine führt, auf rundem Sockel" width="1600" height="1200" loading="lazy"><figcaption>Drachendame mit Hund, zwei Figuren auf einem Sockel</figcaption></figure>
+        <figure class="shot glass-cap shot--c"><img src="img/figur-drache-hund-seite.webp" alt="Dieselbe Drachenfigur mit Hund von der Seite, mit Flügeln und Herzschwanz" width="1600" height="1200" loading="lazy"><figcaption>Von der Seite: Flügel, Herzschwanz, Kette am Halsband</figcaption></figure>
+        <figure class="shot glass-cap shot--d"><img src="img/figur-smoking.webp" alt="3D-gedruckte Figur eines Mannes mit blonden Haaren im schwarzen Smoking mit weißer Fliege" width="1200" height="1600" loading="lazy"><figcaption>Im Smoking, zum Beispiel für die Hochzeitstorte</figcaption></figure>
       </div>
     </div>
   </section>
 
   <section class="band band--marmor" id="preise" aria-labelledby="preise-h">
+    <div class="backdrop backdrop--preise" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="wrap">
       <div class="head">
         <h2 id="preise-h">Stell deine Figur zusammen</h2>
@@ -150,7 +153,7 @@
           <fieldset><legend>Sockel</legend><div class="bases" id="bases"></div></fieldset>
           <fieldset><legend>Extras</legend><div class="checks" id="extras"></div></fieldset>
         </div>
-        <aside class="ticket" aria-label="Dein Druckauftrag">
+        <aside class="ticket glass glass--dark" aria-label="Dein Druckauftrag">
           <h3>Dein Druckauftrag</h3>
           <dl id="sumList"></dl>
           <div class="ticket__total"><span>Richtpreis gesamt</span><b class="num" id="total" aria-live="polite">0 €</b></div>
@@ -166,6 +169,7 @@
   </section>
 
   <section class="band band--dark on-dark" id="anfrage" aria-labelledby="anfrage-h">
+    <div class="backdrop backdrop--anfrage" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="wrap">
       <div class="head">
         <h2 id="anfrage-h">Bereit für dein Werk?</h2>
@@ -182,7 +186,7 @@
           <div class="field field--full"><label for="fMsg">Was soll die Figur zeigen?</label><textarea id="fMsg" name="nachricht" placeholder="Zum Beispiel: Papa in seiner Arbeitshose mit Hammer, eine Hand in der Hüfte, so wie er immer in der Werkstatt steht …"></textarea></div>
           <div class="field field--full"><button class="btn" type="submit">E-Mail erstellen</button></div>
         </form>
-        <div class="mail" id="result">
+        <div class="mail glass glass--dark" id="result">
           <h3>Deine Anfrage</h3>
           <div class="mail__to"><span>An</span><code id="addr" translate="no">info@winheller-3d.com</code><button class="btn btn--s btn--line" type="button" id="copyAddr">Adresse kopieren</button></div>
           <pre id="mailText">Sobald Name und E-Mail ausgefüllt sind und du auf „E-Mail erstellen“ tippst, steht hier dein fertiger Anfragetext.</pre>
@@ -197,6 +201,7 @@
   </section>
 
   <section class="band" id="fragen" aria-labelledby="fragen-h">
+    <div class="backdrop backdrop--fragen" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="wrap faq">
       <div>
         <h2 id="fragen-h">Gut zu wissen</h2>

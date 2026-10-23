@@ -20,6 +20,13 @@ if(!reduce && 'IntersectionObserver' in window){
   });
 } else document.documentElement.classList.remove('js');
 
+/* Glas: Lichtreflex folgt dem Zeiger (nur mit Maus) */
+if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+  document.querySelectorAll('.glass').forEach(el=>{
+    el.addEventListener('pointermove',e=>{ const r=el.getBoundingClientRect(); el.style.setProperty('--mx',(e.clientX-r.left)+'px'); el.style.setProperty('--my',(e.clientY-r.top)+'px'); });
+  });
+}
+
 /* ---------- Konfigurator (PLATZHALTERPREISE: hier anpassen) ---------- */
 const PREISE = {
   groesse: { 10:{basis:79, weiterePerson:49}, 15:{basis:119, weiterePerson:69}, 20:{basis:159, weiterePerson:89}, 25:{basis:209, weiterePerson:119} },

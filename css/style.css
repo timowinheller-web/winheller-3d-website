@@ -267,3 +267,119 @@ footer{background:var(--tief);color:var(--nacht-text);font-size:var(--t-s)}
 .js .rv{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease-out),transform .7s var(--ease-out);transition-delay:calc(var(--i,0) * 80ms)}
 .js .rv.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none}}
+
+/* =========================================================
+   Glas: Milchglas-Flächen vor weichgezeichneten Figurenfotos
+   und warmem Werkstattlicht. Ohne Unterbau wirkt Glas nicht,
+   darum hat jeder Glas-Abschnitt eine eigene Kulisse.
+   ========================================================= */
+:root{
+  --glass-light:rgba(255,255,255,.52);
+  --glass-light-edge:rgba(255,255,255,.75);
+  --glass-dark:rgba(30,30,30,.55);
+  --glass-dark-edge:rgba(255,255,255,.14);
+  --glass-blur:blur(22px) saturate(1.7);
+  --glass-lift:0 1px 0 rgba(255,255,255,.6) inset,0 24px 60px -24px rgba(30,30,30,.35);
+  --glass-lift-dark:0 1px 0 rgba(255,255,255,.12) inset,0 30px 70px -30px rgba(0,0,0,.7);
+}
+/* Kulissen */
+.hero,.band{position:relative;isolation:isolate}
+.backdrop{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.backdrop::before{content:"";position:absolute;inset:-60px;background-size:cover;background-position:center;filter:blur(48px) saturate(1.25);opacity:.55;transform:scale(1.1)}
+.backdrop i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55}
+.backdrop--hero::before{background-image:url(../img/figur-drache-hund.webp);opacity:.35;inset:-80px -80px -80px 40%}
+.backdrop--hero i:nth-child(1){width:520px;height:520px;right:4%;top:10%;background:#E3B357;opacity:.45}
+.backdrop--hero i:nth-child(2){width:360px;height:360px;left:-80px;bottom:-120px;background:#fff;opacity:.9}
+.backdrop--hero i:nth-child(3){width:300px;height:300px;right:30%;bottom:-60px;background:#c98b62;opacity:.25}
+.backdrop--figuren::before{background-image:url(../img/figur-drache-hund-seite.webp);opacity:.22}
+.backdrop--figuren i:nth-child(1){width:600px;height:600px;left:-160px;top:-120px;background:var(--gold);opacity:.22}
+.backdrop--figuren i:nth-child(2){width:500px;height:500px;right:-120px;bottom:-140px;background:#6f8a52;opacity:.22}
+.backdrop--figuren i:nth-child(3){display:none}
+.backdrop--preise::before{background-image:url(../img/figur-smoking.webp);opacity:.3;inset:-80px 30% -80px -80px}
+.backdrop--preise i:nth-child(1){width:620px;height:620px;right:-120px;top:20%;background:#E3B357;opacity:.4}
+.backdrop--preise i:nth-child(2){width:420px;height:420px;left:10%;top:-100px;background:#fff;opacity:.85}
+.backdrop--preise i:nth-child(3){display:none}
+.backdrop--anfrage::before{background-image:url(../img/figur-handwerker.webp);opacity:.2;inset:-80px -80px -80px 45%}
+.backdrop--anfrage i:nth-child(1){width:560px;height:560px;left:-140px;bottom:-200px;background:var(--gold);opacity:.28}
+.backdrop--anfrage i:nth-child(2){width:420px;height:420px;right:5%;top:-120px;background:#c98b62;opacity:.18}
+.backdrop--anfrage i:nth-child(3){display:none}
+.backdrop--fragen i:nth-child(1){width:520px;height:520px;left:-120px;top:10%;background:#E3B357;opacity:.3}
+.backdrop--fragen i:nth-child(2){width:420px;height:420px;right:-80px;bottom:-80px;background:#d9cfbf;opacity:.6}
+.backdrop--fragen i:nth-child(3){display:none}
+.backdrop--fragen::before{display:none}
+.hero::before{z-index:0;opacity:.6}
+.hero__in{position:relative;z-index:1}
+
+/* Glas-Material: Füllung, Unschärfe, Lichtkante oben, Lichtreflex folgt der Maus */
+.glass{background:var(--glass-light);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:var(--glass-lift);border:1px solid var(--glass-light-edge);isolation:isolate;overflow:hidden}
+.glass--dark{background:var(--glass-dark);border-color:var(--glass-dark-edge);box-shadow:var(--glass-lift-dark)}
+.glass::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(420px circle at var(--mx,30%) var(--my,0%),rgba(255,255,255,.35),transparent 60%);opacity:.7;transition:opacity .3s ease}
+.glass--dark::after{background:radial-gradient(420px circle at var(--mx,30%) var(--my,0%),rgba(227,179,87,.18),transparent 60%)}
+
+/* Hero */
+.hero{background:var(--marmor)}
+.mail.glass,.hero__facts.glass{position:relative}
+.hero__facts.glass{padding:var(--s4) var(--s6);border-radius:18px;max-width:max-content}
+.readout.glass{padding:var(--s4) var(--s6);border-radius:18px}
+.hint.glass{padding:8px 14px;border-radius:999px}
+.chip{border-radius:999px;background:var(--glass-light);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 10px 24px -14px rgba(30,30,30,.4);border:1px solid var(--glass-light-edge)}
+.chip[aria-pressed="true"]{background:rgba(30,30,30,.82);border-color:rgba(255,255,255,.12)}
+@media (hover:hover){.chip:not([aria-pressed="true"]):hover{background:rgba(255,255,255,.8)}}
+
+/* Ablauf: Bildflächen mit Glas-Etikett */
+.flow__media{border-radius:20px}
+.tag{border-radius:999px;background:rgba(30,30,30,.55);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);left:var(--s4);top:var(--s4)}
+.pick{border-radius:999px;background:rgba(30,30,30,.6)!important;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);right:var(--s4);bottom:var(--s4)}
+.slider input{accent-color:var(--gold-lo)}
+
+/* Galerie: Fotos mit schwebender Glas-Bildunterschrift */
+.band--dark{background:#161515}
+.shot.glass-cap{position:relative}
+.shot.glass-cap img{border-radius:22px}
+.shot.glass-cap figcaption{position:absolute;left:var(--s4);right:var(--s4);bottom:var(--s4);padding:12px 16px;border-radius:14px;background:rgba(30,30,30,.45);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6);border:1px solid rgba(255,255,255,.14);color:#fff!important;font-size:var(--t-s);transform:translateY(0);transition:transform .35s var(--ease-out),background-color .3s ease}
+@media (hover:hover){.shot.glass-cap:hover figcaption{transform:translateY(-4px);background:rgba(30,30,30,.6)}}
+.shot.glass-cap img{transition:transform .6s var(--ease-out)}
+.shot.glass-cap{overflow:hidden;border-radius:22px}
+@media (hover:hover){.shot.glass-cap:hover img{transform:scale(1.03)}}
+
+/* Konfigurator: Kacheln als helles Glas, Auftrag als dunkles Glas */
+.opt__box,.check,.stepper{background:var(--glass-light);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-light-edge);box-shadow:0 1px 0 rgba(255,255,255,.7) inset;border-radius:16px}
+.opt input:checked + .opt__box{background:rgba(30,30,30,.86);border-color:rgba(255,255,255,.1)}
+.check:has(input:checked){background:rgba(255,255,255,.82)}
+.stepper{overflow:hidden}
+.ticket.glass{border-radius:26px;background:rgba(24,24,24,.72)}
+.ticket__meta{background:rgba(255,255,255,.06);border-radius:14px}
+.ticket .btn{border-radius:999px}
+
+/* Anfrage: dunkles Glas */
+.band--dark.on-dark{background:#141313}
+.field input,.field select,.field textarea{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:12px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.field select{background-color:#262525}
+.cfgline{background:rgba(255,255,255,.06);border-radius:12px}
+.mail.glass{border-radius:26px}
+.mail pre{background:rgba(0,0,0,.35);border-radius:14px}
+
+/* Fragen: helle Glasstreifen */
+details{background:var(--glass-light);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-light-edge);border-radius:18px;box-shadow:0 1px 0 rgba(255,255,255,.7) inset}
+details[open]{background:rgba(255,255,255,.72)}
+
+/* Buttons: runde Form passend zum Glas */
+.btn{border-radius:999px}
+.btn--line{box-shadow:inset 0 0 0 2px currentColor}
+
+/* Navigation: Glasleiste */
+.nav{background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(20px) saturate(1.8);backdrop-filter:blur(20px) saturate(1.8);box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 10px 30px -20px rgba(30,30,30,.4)}
+
+/* Wer Transparenz reduziert haben möchte, bekommt feste Flächen */
+@media (prefers-reduced-transparency:reduce){
+  .glass,.chip,.opt__box,.check,.stepper,details,.nav,.tag,.pick,.shot.glass-cap figcaption,.field input,.field select,.field textarea{-webkit-backdrop-filter:none;backdrop-filter:none}
+  .glass,.chip,.opt__box,.check,.stepper,details,.nav{background:#fff}
+  .glass--dark,.ticket.glass,.mail.glass,.shot.glass-cap figcaption{background:#262525}
+  .backdrop{display:none}
+}
+/* Handy: weniger Unschärfe, spart Akku und bleibt flüssig */
+@media (max-width:700px){
+  :root{--glass-blur:blur(14px) saturate(1.5)}
+  .backdrop i{filter:blur(50px)}
+  .backdrop--hero::before{inset:30% -80px -80px -80px}
+}
