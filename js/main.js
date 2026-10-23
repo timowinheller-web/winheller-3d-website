@@ -198,7 +198,7 @@ const studio = (function(){
 
   scene.add(new THREE.HemisphereLight(0xfff4e0,0x8a8070,.8));
   const key=new THREE.DirectionalLight(0xffe2b0,1.1); key.position.set(-12,22,10); key.castShadow=true; key.shadow.mapSize.set(1024,1024);
-  Object.assign(key.shadow.camera,{left:-12,right:12,top:20,bottom:-4}); key.shadow.radius=6; scene.add(key);
+  Object.assign(key.shadow.camera,{left:-18,right:18,top:22,bottom:-8,far:80}); key.shadow.bias=-.0005; key.shadow.radius=6; scene.add(key);
   const fill=new THREE.DirectionalLight(0xffffff,.55); fill.position.set(12,10,18); scene.add(fill);
   const rim=new THREE.PointLight(0xD5A34A,1.1,60); rim.position.set(8,14,-12); scene.add(rim);
 
@@ -209,50 +209,33 @@ const studio = (function(){
   const clip=new THREE.Plane(new THREE.Vector3(0,-1,0),100);
   const mats=[];
   function mat(color,opt){ const mm=new THREE.MeshStandardMaterial(Object.assign({color,roughness:.7,metalness:0,clippingPlanes:[clip],clipShadows:true,side:THREE.DoubleSide},opt||{})); mm.userData.orig={color:new THREE.Color(color),roughness:mm.roughness,metalness:mm.metalness}; mats.push(mm); return mm; }
-  const C={skin:mat(0xc98b62,{roughness:.6}),shirt:mat(0x2d2c2b,{roughness:.85}),pants:mat(0x262626,{roughness:.9}),grey:mat(0x77736e),hair:mat(0x1d1b1a),base:mat(0x1E1E1E,{roughness:.5}),rock:mat(0x8a8782,{roughness:.95}),wood:mat(0x9a6438,{roughness:.6}),steel:mat(0x3b3d40,{roughness:.35,metalness:.6}),buckle:mat(0xb8b4ad,{roughness:.3,metalness:.8}),shoe:mat(0x181818,{roughness:.6}),sole:mat(0x9a968f)};
+  // Filamentfarben der echten Handwerker-Figur (Anycubic Kobra X, 4 Farben), für Licht im Browser abgestimmt
+  const C={
+    haut:mat(0xB8724C,{roughness:.55}),
+    schwarz:mat(0x1C1B1A,{roughness:.7}),
+    weiss:mat(0xF2EFEA,{roughness:.5}),
+    grau:mat(0xA5A39E,{roughness:.55}),
+    base:mat(0x1E1E1E,{roughness:.45})
+  };
+  const FIL=[C.haut,C.schwarz,C.weiss,C.grau];
 
   const fig=new THREE.Group(); scene.add(fig);
-  function add(geo,mt,x,y,z,rx,ry,rz,parent){ const o=new THREE.Mesh(geo,mt); o.position.set(x||0,y||0,z||0); o.rotation.set(rx||0,ry||0,rz||0); o.castShadow=true; o.receiveShadow=true; (parent||fig).add(o); return o; }
-  const cyl=(rt,rb,h,s)=>new THREE.CylinderGeometry(rt,rb,h,s||28);
-  const sph=(r)=>new THREE.SphereGeometry(r,28,20);
   const box=(w,h,d)=>new THREE.BoxGeometry(w,h,d);
+  // Runder schwarzer Sockel wie bei den gedruckten Figuren
+  const sockel=new THREE.Mesh(new THREE.CylinderGeometry(5,5.15,.8,96),C.base); sockel.position.y=.4; sockel.castShadow=sockel.receiveShadow=true; fig.add(sockel);
 
-  // Sockel + Steine
-  add(cyl(5.4,5.5,.9,64),C.base,0,.45,0);
-  let seed=7; const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280};
-  for(let i=0;i<26;i++){ const a=rnd()*Math.PI*2, r=1+rnd()*3.6, s=.45+rnd()*.55; const rk=add(new THREE.DodecahedronGeometry(s,0),C.rock,Math.cos(a)*r,1+s*.35,Math.sin(a)*r,rnd()*3,rnd()*3,0); rk.scale.y=.55; }
-  // Schuhe
-  [-1,1].forEach(sx=>{ add(box(1.3,.7,2.3),C.shoe,sx*1.05,1.55,.35); add(box(1.35,.18,2.35),C.sole,sx*1.05,1.18,.35); });
-  // Beine (leicht gespreizt)
-  [-1,1].forEach(sx=>{ add(cyl(.82,.72,3.4),C.pants,sx*1.05,3.6,0,0,0,sx*-.03); add(cyl(.9,.82,3.4),C.pants,sx*1.0,6.9,0,0,0,sx*-.03); add(box(.5,1.3,.9),C.pants,sx*1.85,6.4,.2); add(box(.08,1.2,.04),C.grey,sx*1.85,6.4,.66); });
-  // Gürtel
-  add(cyl(1.92,1.92,.5),C.shoe,0,8.75,0); add(box(.7,.42,.15),C.buckle,0,8.75,1.9);
-  // Oberkörper
-  add(cyl(2.15,1.85,4.4),C.shirt,0,11.1,0).scale.z=.72;
-  [-1,1].forEach(sx=>{ add(sph(.95),C.shirt,sx*2.05,12.9,0).scale.set(1,.9,.85); });
-  add(cyl(.55,.6,.8),C.skin,0,13.6,0);
-  // Kopf
-  const head=new THREE.Group(); head.position.set(0,14.9,.05); fig.add(head);
-  add(sph(1.25),C.skin,0,0,0,0,0,0,head).scale.set(.92,1.08,1);
-  const hair=add(new THREE.SphereGeometry(1.29,28,14,0,Math.PI*2,0,Math.PI*.42),C.hair,0,.12,-.05,-.25,0,0,head); hair.scale.set(.94,1.05,1.02);
-  add(box(.85,.2,.25),C.hair,0,-.42,1.12,0,0,0,head);
-  [-1,1].forEach(sx=>{ add(box(.36,.1,.1),C.hair,sx*.36,.38,1.12,0,0,sx*.12,head); add(sph(.09),C.shoe,sx*.34,.18,1.14,0,0,0,head); add(sph(.28),C.skin,sx*1.15,-.05,0,0,0,0,head).scale.set(.5,1,.8); });
-  add(new THREE.ConeGeometry(.16,.4,12),C.skin,0,-.05,1.24,Math.PI/2,0,0,head);
-  // Rechter Arm mit Hammer (Betrachter links)
-  const ra=new THREE.Group(); ra.position.set(-2.2,12.9,0); fig.add(ra);
-  add(cyl(.55,.5,2.6),C.shirt,0,-.9,0,0,0,-.18,ra).position.x=-.2;
-  add(cyl(.5,.45,2.3),C.skin,-.45,-2.4,.55,-1.0,0,0,ra);
-  add(sph(.5),C.skin,-.45,-1.6,1.7,0,0,0,ra);
-  const hammer=new THREE.Group(); hammer.position.set(-.45,-1.5,1.75); hammer.rotation.set(.15,0,.32); ra.add(hammer);
-  add(cyl(.17,.2,4.2),C.wood,0,.9,0,0,0,0,hammer);
-  add(box(.6,.55,2.0),C.steel,0,3.05,.1,0,0,0,hammer).rotation.x=0;
-  add(box(.5,.5,.6),C.steel,0,3.05,-1.05,0,0,0,hammer);
-  // Linker Arm, Hand in der Hüfte
-  const la=new THREE.Group(); la.position.set(2.2,12.9,0); fig.add(la);
-  add(cyl(.55,.5,2.6),C.shirt,.45,-1.0,0,0,0,.35,la);
-  add(cyl(.5,.45,2.4),C.skin,.6,-3.0,-.1,0,0,-.75,la);
-  add(sph(.5),C.skin,-.15,-3.8,0,0,0,0,la);
-  fig.traverse(o=>{ if(o.isMesh) o.castShadow=true; });
+  // Echtes Druckmodell (aus dem 3MF reduziert): Höhe 150 mm -> 15 Einheiten, steht auf dem Sockel
+  let ready=false, onReady=()=>{};
+  new THREE.GLTFLoader().load('models/handwerker.glb',gltf=>{
+    const model=gltf.scene; model.scale.setScalar(.1); model.position.y=.8;
+    model.traverse(o=>{
+      if(!o.isMesh) return;
+      const k=parseInt((o.name.match(/(\d)$/)||[,1])[1],10)-1;
+      o.geometry.computeVertexNormals();
+      o.material=FIL[k]||C.schwarz; o.castShadow=true; o.receiveShadow=true;
+    });
+    fig.add(model); ready=true; onReady();
+  },undefined,()=>{ stage.classList.add('is-error'); });
 
   // Druckdüse / Lage-Ring
   const ring=new THREE.Mesh(new THREE.TorusGeometry(5.8,.06,8,96),new THREE.MeshBasicMaterial({color:0xD5A34A}));
@@ -261,7 +244,7 @@ const studio = (function(){
   const nz=new THREE.Mesh(new THREE.ConeGeometry(.35,.9,16),new THREE.MeshStandardMaterial({color:0xD5A34A,metalness:.8,roughness:.3})); nz.rotation.x=Math.PI; nozzle.add(nz);
   const nzb=new THREE.Mesh(box(1.4,1,1.4),new THREE.MeshStandardMaterial({color:0x3A3939,roughness:.5})); nzb.position.y=.9; nozzle.add(nzb);
 
-  const FIG_H=16.2; let sizeCm=15, printing=false, pStart=0; const P_DUR=reduce?1:5200;
+  const FIG_H=15.8; let sizeCm=15, printing=false, pStart=0; const P_DUR=reduce?1:5200;
   function setHud(h){
     const k=Math.max(0,Math.min(1,h/FIG_H));
     $('hVal').textContent=(k*sizeCm).toFixed(1).replace('.',',');
@@ -280,7 +263,7 @@ const studio = (function(){
     mats.forEach(finishes[b.dataset.finish]);
   }));
 
-  let rotY=-.5, vel=0, dragging=false, lastX=0, idle=0;
+  let rotY=Math.PI-.45, vel=0, dragging=false, lastX=0, idle=0;
   fig.rotation.y=rotY;
   stage.addEventListener('pointerdown',e=>{dragging=true;lastX=e.clientX;stage.setPointerCapture(e.pointerId)});
   stage.addEventListener('pointermove',e=>{ if(!dragging) return; const dx=e.clientX-lastX; lastX=e.clientX; vel=dx*.008; rotY+=vel; idle=0; $('hint').hidden=true; });
@@ -293,7 +276,9 @@ const studio = (function(){
   function startPrint(){ printing=true; pStart=performance.now(); ring.visible=nozzle.visible=true; $('printBtn').disabled=true; }
   $('printBtn').onclick=startPrint;
   clip.constant=0; setHud(0);
-  new IntersectionObserver((es,o)=>{ if(es[0].isIntersecting){ startPrint(); o.disconnect(); } },{threshold:.45}).observe(stage);
+  let seen=false;
+  onReady=()=>{ if(seen) startPrint(); };
+  new IntersectionObserver((es,o)=>{ if(es[0].isIntersecting){ seen=true; if(ready) startPrint(); o.disconnect(); } },{threshold:.45}).observe(stage);
 
   function resize(){ const w=stage.clientWidth, h=stage.clientHeight; renderer.setSize(w,h,false); cam.aspect=w/h; cam.fov = w/h<.9 ? 36 : 30; cam.updateProjectionMatrix(); }
   new ResizeObserver(resize).observe(stage); resize();
