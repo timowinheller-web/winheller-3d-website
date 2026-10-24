@@ -38,7 +38,7 @@
   <div class="wrap nav__in">
     <a href="#top" aria-label="Winheller 3D Manufactur, zum Anfang" translate="no"><svg class="lg nav__logo" viewBox="0 0 969 180" role="img" aria-label="Winheller 3D Manufactur"><use href="#lg-quer"/></svg></a>
     <nav class="nav__links" aria-label="Hauptnavigation">
-      <a href="#ablauf">Ablauf</a><a href="#figuren">Figuren</a><a href="#preise">Preise</a><a href="#fragen">Fragen</a>
+      <a href="#ablauf">Ablauf</a><a href="#figuren">Figuren</a><a href="#produkte">Produkte</a><a href="#preise">Preise</a><a href="#fragen">Fragen</a>
     </nav>
     <a class="btn btn--s" href="#anfrage">Figur anfragen</a>
   </div>
@@ -122,6 +122,49 @@
     </div>
   </section>
 
+  <section class="band" id="produkte" aria-labelledby="produkte-h">
+    <div class="backdrop backdrop--produkte" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="wrap">
+      <div class="head">
+        <h2 id="produkte-h">Mehr als Figuren</h2>
+        <p class="lede">Alles kommt aus demselben Drucker: mehrfarbig, mit deinem Namen, deinem Logo oder deinem Haustier. Hier die Sachen, nach denen am häufigsten gefragt wird.</p>
+      </div>
+      <ul class="products">
+        <li class="product glass">
+          <svg class="product__icon" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="38" r="17"/><circle cx="32" cy="38" r="9"/><path d="M32 21V9M26 9h12"/><path d="M24 9a8 8 0 0 1 16 0"/></svg>
+          <h3>Schlüsselanhänger mit Einkaufswagen-Chip</h3>
+          <p>Name, Spitzname oder Logo auf der Vorderseite, hinten der Chip zum Herausdrehen. Passt in jeden Einkaufswagen und bleibt am Schlüsselbund.</p>
+        </li>
+        <li class="product glass">
+          <svg class="product__icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M20 44c-6-7-6-18 0-24 8-5 16 5 24 0 6 6 6 17 0 24-7 6-17 6-24 0z"/><circle cx="26" cy="31" r="2"/><circle cx="38" cy="31" r="2"/><path d="M28 40c2 2 6 2 8 0"/><path d="M14 20l-4-8M50 20l4-8"/></svg>
+          <h3>Dein Haustier als Figur</h3>
+          <p>Hund, Katze, Pferd oder Kaninchen nach Foto, allein oder zusammen mit Frauchen und Herrchen auf einem Sockel. Fell und Zeichnung in Farbe.</p>
+        </li>
+        <li class="product glass">
+          <svg class="product__icon" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="22" width="44" height="20" rx="3"/><path d="M18 32h28"/><path d="M14 42l-2 10M50 42l2 10"/></svg>
+          <h3>Namens- und Türschilder</h3>
+          <p>Für Kinderzimmer, Haustür, Schreibtisch oder Praxis. Zwei- oder mehrfarbig, mit Motiv, Schrift nach Wunsch, wetterfest für draußen.</p>
+        </li>
+        <li class="product glass">
+          <svg class="product__icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M12 50h40M16 50V30h32v20"/><path d="M20 30V22h24v8"/><circle cx="32" cy="14" r="4"/><path d="M32 18v4"/></svg>
+          <h3>Tortenfiguren</h3>
+          <p>Brautpaar, Geburtstagskind oder Jubilar als kleine Figur für die Torte, danach als Erinnerung ins Regal. Lebensmittelsicher getrennt vom Kuchen auf eigenem Sockel.</p>
+        </li>
+        <li class="product glass">
+          <svg class="product__icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M12 48L32 12l20 36z"/><path d="M22 48l10-18 10 18"/></svg>
+          <h3>Logos, Maskottchen, Kleinserien</h3>
+          <p>Firmenlogo als Aufsteller, Maskottchen als Figur, Give-aways für Messe und Team, ab 10 Stück zum Staffelpreis. Eine Datei, viele gleiche Teile.</p>
+        </li>
+        <li class="product glass">
+          <svg class="product__icon" viewBox="0 0 64 64" aria-hidden="true"><path d="M14 46l8-30h20l8 30z"/><path d="M22 36h20"/><path d="M30 10l2-4 2 4"/></svg>
+          <h3>Deine eigene Idee</h3>
+          <p>Handyhalter mit Namen, Stiftebecher, Pokal für den Vereinsabend, ein Ersatzteil nach Vorlage. Schick eine Skizze oder ein Foto, wir sagen, ob und wie es geht.</p>
+        </li>
+      </ul>
+      <p class="products__cta"><a class="btn" href="#anfrage">Idee anfragen</a></p>
+    </div>
+  </section>
+
   <section class="band band--marmor" id="preise" aria-labelledby="preise-h">
     <div class="backdrop backdrop--preise" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="wrap">
@@ -172,7 +215,7 @@
           <div class="field"><label for="fName">Name</label><input id="fName" name="name" autocomplete="name" required><span class="err" id="eName"></span></div>
           <div class="field"><label for="fMail">E-Mail</label><input id="fMail" name="email" type="email" autocomplete="email" spellcheck="false" required><span class="err" id="eMail"></span></div>
           <div class="field"><label for="fOcc">Anlass</label>
-            <select id="fOcc" name="anlass"><option>Geschenk</option><option>Geburtstag</option><option>Hochzeit</option><option>Jubiläum</option><option>Ruhestand</option><option>Firma oder Team</option><option>Einfach so</option></select></div>
+            <select id="fOcc" name="anlass"><option>Geschenk</option><option>Schlüsselanhänger</option><option>Haustier-Figur</option><option>Schild</option><option>Tortenfigur</option><option>Firma oder Team</option><option>Geburtstag</option><option>Hochzeit</option><option>Jubiläum</option><option>Ruhestand</option><option>Einfach so</option></select></div>
           <div class="field"><label for="fDate">Wunschtermin</label><input id="fDate" name="termin" type="date"></div>
           <div class="cfgline"><span>Auswahl: <b id="cfgText">–</b></span><a href="#preise">Ändern</a></div>
           <div class="field field--full"><label for="fMsg">Was soll die Figur zeigen?</label><textarea id="fMsg" name="nachricht" placeholder="Zum Beispiel: Papa in seiner Arbeitshose mit Hammer, eine Hand in der Hüfte, so wie er immer in der Werkstatt steht …"></textarea></div>
