@@ -1,4 +1,4 @@
-/* Winheller 3D Manufactur
+/* Winheller 3D Manufaktur
    Konzept „Druckplatte“: Die Seite zeigt, wie eine Figur Schicht für Schicht entsteht.
    Markenfarben aus dem Brand Guide v2: Gold nur als Akzent, Anthrazit für Struktur, Marmor als Fläche. */
 :root{
@@ -287,19 +287,15 @@ footer{background:var(--tief);color:var(--nacht-text);font-size:var(--t-s)}
 .backdrop{position:absolute;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .backdrop::before{content:"";position:absolute;inset:-60px;background-size:cover;background-position:center;filter:blur(48px) saturate(1.25);opacity:.55;transform:scale(1.1)}
 .backdrop i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55}
-.backdrop--hero::before{background-image:url(../img/figur-drache-hund.webp);opacity:.35;inset:-80px -80px -80px 40%}
+.backdrop--hero::before{background-image:url(../img/schritt-3.webp);opacity:.3;inset:-80px -80px -80px 40%}
 .backdrop--hero i:nth-child(1){width:520px;height:520px;right:4%;top:10%;background:#E3B357;opacity:.45}
 .backdrop--hero i:nth-child(2){width:360px;height:360px;left:-80px;bottom:-120px;background:#fff;opacity:.9}
 .backdrop--hero i:nth-child(3){width:300px;height:300px;right:30%;bottom:-60px;background:#c98b62;opacity:.25}
-.backdrop--figuren::before{background-image:url(../img/figur-drache-hund-seite.webp);opacity:.22}
-.backdrop--figuren i:nth-child(1){width:600px;height:600px;left:-160px;top:-120px;background:var(--gold);opacity:.22}
-.backdrop--figuren i:nth-child(2){width:500px;height:500px;right:-120px;bottom:-140px;background:#6f8a52;opacity:.22}
-.backdrop--figuren i:nth-child(3){display:none}
-.backdrop--preise::before{background-image:url(../img/figur-smoking.webp);opacity:.3;inset:-80px 30% -80px -80px}
+.backdrop--preise::before{background-image:url(../img/schritt-2.webp);opacity:.3;inset:-80px 30% -80px -80px}
 .backdrop--preise i:nth-child(1){width:620px;height:620px;right:-120px;top:20%;background:#E3B357;opacity:.4}
 .backdrop--preise i:nth-child(2){width:420px;height:420px;left:10%;top:-100px;background:#fff;opacity:.85}
 .backdrop--preise i:nth-child(3){display:none}
-.backdrop--anfrage::before{background-image:url(../img/figur-handwerker.webp);opacity:.2;inset:-80px -80px -80px 45%}
+.backdrop--anfrage::before{background-image:url(../img/schritt-1.webp);opacity:.2;inset:-80px -80px -80px 45%}
 .backdrop--anfrage i:nth-child(1){width:560px;height:560px;left:-140px;bottom:-200px;background:var(--gold);opacity:.28}
 .backdrop--anfrage i:nth-child(2){width:420px;height:420px;right:5%;top:-120px;background:#c98b62;opacity:.18}
 .backdrop--anfrage i:nth-child(3){display:none}
@@ -391,7 +387,7 @@ details[open]{background:rgba(255,255,255,.72)}
 @media (max-width:900px){.dock{align-items:flex-start}.dock__row{justify-content:flex-start}}
 
 /* Produkte: sechs Glaskacheln, Strichzeichnung statt Foto */
-.backdrop--produkte::before{background-image:url(../img/figur-drache-hund.webp);opacity:.16;inset:-80px 40% -80px -80px}
+.backdrop--produkte::before{background-image:url(../img/schritt-3.webp);opacity:.16;inset:-80px 40% -80px -80px}
 .backdrop--produkte i:nth-child(1){width:560px;height:560px;right:-140px;top:-120px;background:#E3B357;opacity:.3}
 .backdrop--produkte i:nth-child(2){width:420px;height:420px;left:20%;bottom:-160px;background:#fff;opacity:.9}
 .backdrop--produkte i:nth-child(3){display:none}

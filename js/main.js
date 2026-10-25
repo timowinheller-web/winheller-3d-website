@@ -1,4 +1,4 @@
-/* Winheller 3D Manufactur – Seitenlogik */
+/* Winheller 3D Manufaktur – Seitenlogik */
 (function(){
 "use strict";
 const $ = id => document.getElementById(id);
@@ -16,7 +16,7 @@ if(!reduce && 'IntersectionObserver' in window){
   window.__rv=true;
   const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }),{rootMargin:'0px 0px -12% 0px'});
   document.querySelectorAll('.band').forEach(sec=>{
-    sec.querySelectorAll('.head h2, .head .lede, .flow__step, .shot, .opts, .ticket, form, .mail, .faq > div:first-child, .faq__list').forEach((el,i)=>{ el.classList.add('rv'); el.style.setProperty('--i',i); io.observe(el); });
+    sec.querySelectorAll('.head h2, .head .lede, .flow__step, .opts, .ticket, form, .mail, .faq > div:first-child, .faq__list').forEach((el,i)=>{ el.classList.add('rv'); el.style.setProperty('--i',i); io.observe(el); });
   });
 } else document.documentElement.classList.remove('js');
 
@@ -101,7 +101,7 @@ function buildMail(fromSubmit){
   const {total}=calc();
   const d=form.termin.value?new Date(form.termin.value).toLocaleDateString('de-DE'):'flexibel';
   const subject=`Figurenanfrage von ${name}`;
-  const body=`Hallo Winheller 3D Manufactur,
+  const body=`Hallo Winheller 3D Manufaktur,
 
 ich möchte gern eine Figur anfragen.
 
