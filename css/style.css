@@ -386,17 +386,54 @@ details[open]{background:rgba(255,255,255,.72)}
 .chip--model{font-size:18px;padding:11px 18px}
 @media (max-width:900px){.dock{align-items:flex-start}.dock__row{justify-content:flex-start}}
 
-/* Produkte: sechs Glaskacheln, Strichzeichnung statt Foto */
-.backdrop--produkte::before{background-image:url(../img/schritt-3.webp);opacity:.16;inset:-80px 40% -80px -80px}
-.backdrop--produkte i:nth-child(1){width:560px;height:560px;right:-140px;top:-120px;background:#E3B357;opacity:.3}
-.backdrop--produkte i:nth-child(2){width:420px;height:420px;left:20%;bottom:-160px;background:#fff;opacity:.9}
-.backdrop--produkte i:nth-child(3){display:none}
-.products{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4)}
-@media (max-width:960px){.products{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:600px){.products{grid-template-columns:1fr}}
-.product{padding:var(--s6);border-radius:22px;display:grid;gap:var(--s3);align-content:start;transition:transform .35s var(--ease-out)}
-@media (hover:hover){.product:hover{transform:translateY(-4px)}}
-.product h3{font-size:var(--t-l);line-height:1.1}
-.product p{color:var(--anthrazit);font-size:var(--t-s)}
-.product__icon{width:52px;height:52px;fill:none;stroke:var(--gold-display);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+/* Werkstatt: Kennzahlen + Materialtabelle */
+.backdrop--werkstatt::before{background-image:url(../img/katalog/designlampe.jpg);opacity:.2;inset:-80px -80px -80px 45%}
+.backdrop--werkstatt i:nth-child(1){width:560px;height:560px;left:-140px;top:-120px;background:#E3B357;opacity:.28}
+.backdrop--werkstatt i:nth-child(2){width:420px;height:420px;right:10%;bottom:-160px;background:#fff;opacity:.9}
+.backdrop--werkstatt i:nth-child(3){display:none}
+.stats{list-style:none;margin:0 0 var(--s8);padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--s4)}
+@media (max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{padding:var(--s6);border-radius:20px;display:grid;gap:6px}
+.stat b{font-family:var(--f-head);font-weight:700;text-transform:uppercase;font-size:var(--t-xl);line-height:1;color:var(--tief)}
+.stat span{font-size:var(--t-s);color:var(--anthrazit)}
+.mats{border-radius:22px;padding:var(--s6);overflow-x:auto}
+.mats table{width:100%;border-collapse:collapse;font-size:var(--t-s);min-width:560px}
+.mats caption{text-align:left;font-family:var(--f-head);font-weight:700;text-transform:uppercase;font-size:var(--t-l);color:var(--tief);padding-bottom:var(--s4)}
+.mats th,.mats td{text-align:left;padding:12px 16px 12px 0;border-bottom:1px solid rgba(30,30,30,.1);vertical-align:top}
+.mats thead th{font-size:var(--t-xs);font-weight:600;color:var(--stein);border-bottom-width:2px}
+.mats tbody th{font-weight:600;color:var(--tief);white-space:nowrap}
+.mats tbody tr:last-child th,.mats tbody tr:last-child td{border-bottom:0}
+
+/* Sortiment: Produkte wie im Katalog, Bild und Text im Wechsel */
+.backdrop--sortiment::before{background-image:url(../img/katalog/fotolampe.jpg);opacity:.18;inset:-80px 45% -80px -80px}
+.backdrop--sortiment i:nth-child(1){width:620px;height:620px;right:-140px;top:10%;background:#E3B357;opacity:.32}
+.backdrop--sortiment i:nth-child(2){width:420px;height:420px;left:15%;bottom:-140px;background:#fff;opacity:.85}
+.backdrop--sortiment i:nth-child(3){display:none}
+.cats{display:flex;flex-wrap:wrap;gap:var(--s2);margin-bottom:var(--s12)}
+.cats .chip{text-decoration:none}
+.group{margin-bottom:var(--s16);scroll-margin-top:90px}
+.group__title{font-size:var(--t-2xl);margin-bottom:var(--s6)}
+.item{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:var(--s8);align-items:center;padding:var(--s4);border-radius:26px;margin-bottom:var(--s4)}
+.item--flip .item__media{order:2}
+@media (max-width:800px){.item{grid-template-columns:1fr;gap:var(--s4)}.item--flip .item__media{order:0}}
+.item__media{margin:0;aspect-ratio:4/5;overflow:hidden;border-radius:20px;background:var(--marmor-2)}
+.item__media img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-out)}
+@media (hover:hover){.item:hover .item__media img{transform:scale(1.03)}}
+@media (max-width:800px){.item__media{aspect-ratio:4/3}}
+.item__body{display:grid;gap:var(--s4);padding:var(--s4) var(--s4) var(--s4) 0}
+.item--flip .item__body{padding:var(--s4) 0 var(--s4) var(--s4)}
+@media (max-width:800px){.item__body,.item--flip .item__body{padding:0 var(--s2) var(--s4)}}
+.item h4{font-family:var(--f-head);font-weight:700;text-transform:uppercase;font-size:var(--t-xl);line-height:1;color:var(--tief);margin:0}
+.item p{color:var(--anthrazit);max-width:52ch}
+.item__facts{margin:0;display:grid;gap:0}
+.item__facts div{display:grid;grid-template-columns:110px 1fr;gap:var(--s4);padding:10px 0;border-top:1px solid rgba(30,30,30,.1);font-size:var(--t-s)}
+.item__facts dt{font-weight:600;color:var(--tief)}
+.item__facts dd{margin:0;color:var(--anthrazit)}
+.item .btn{justify-self:start}
+.ideas__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4);margin-top:var(--s6)}
+@media (max-width:860px){.ideas__grid{grid-template-columns:1fr}}
+.idea{padding:var(--s6);border-radius:22px}
+.idea h4{font-family:var(--f-head);font-weight:700;text-transform:uppercase;font-size:var(--t-l);color:var(--tief);margin:0 0 var(--s3)}
+.idea ul{margin:0;padding-left:1.1em;display:grid;gap:6px;font-size:var(--t-s);color:var(--anthrazit)}
+.idea li::marker{color:var(--gold-display)}
 .products__cta{margin-top:var(--s8)}

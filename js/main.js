@@ -16,7 +16,7 @@ if(!reduce && 'IntersectionObserver' in window){
   window.__rv=true;
   const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }),{rootMargin:'0px 0px -12% 0px'});
   document.querySelectorAll('.band').forEach(sec=>{
-    sec.querySelectorAll('.head h2, .head .lede, .flow__step, .opts, .ticket, form, .mail, .faq > div:first-child, .faq__list').forEach((el,i)=>{ el.classList.add('rv'); el.style.setProperty('--i',i); io.observe(el); });
+    sec.querySelectorAll('.head h2, .head .lede, .flow__step, .stat, .mats, .item, .idea, .opts, .ticket, form, .mail, .faq > div:first-child, .faq__list').forEach((el,i)=>{ el.classList.add('rv'); el.style.setProperty('--i',i); io.observe(el); });
   });
 } else document.documentElement.classList.remove('js');
 
@@ -26,6 +26,12 @@ if(matchMedia('(hover:hover) and (pointer:fine)').matches){
     el.addEventListener('pointermove',e=>{ const r=el.getBoundingClientRect(); el.style.setProperty('--mx',(e.clientX-r.left)+'px'); el.style.setProperty('--my',(e.clientY-r.top)+'px'); });
   });
 }
+
+/* Sortiment: „… anfragen“ wählt das Produkt im Formular vor */
+document.querySelectorAll('[data-anlass]').forEach(a=>a.addEventListener('click',()=>{
+  const sel=document.getElementById('fOcc'), want=a.dataset.anlass;
+  const opt=[...sel.options].find(o=>o.text===want); if(opt) sel.value=opt.text;
+}));
 
 /* ---------- Konfigurator (PLATZHALTERPREISE: hier anpassen) ---------- */
 const PREISE = {
