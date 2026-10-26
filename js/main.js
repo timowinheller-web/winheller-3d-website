@@ -3,7 +3,6 @@
 "use strict";
 const $ = id => document.getElementById(id);
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const fmtEUR = n => n.toLocaleString('de-DE')+' €';
 $('year').textContent = new Date().getFullYear();
 
 /* Navigation: Linie erst nach dem Scrollen */
@@ -16,7 +15,7 @@ if(!reduce && 'IntersectionObserver' in window){
   window.__rv=true;
   const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }),{rootMargin:'0px 0px -12% 0px'});
   document.querySelectorAll('.band').forEach(sec=>{
-    sec.querySelectorAll('.head h2, .head .lede, .flow__step, .stat, .mats, .item, .idea, .opts, .ticket, form, .mail, .faq > div:first-child, .faq__list').forEach((el,i)=>{ el.classList.add('rv'); el.style.setProperty('--i',i); io.observe(el); });
+    sec.querySelectorAll('.head h2, .head .lede, .flow__step, .stat, .mats, .item, .idea, .mail, .faq > div:first-child, .faq__list').forEach((el,i)=>{ el.classList.add('rv'); el.style.setProperty('--i',i); io.observe(el); });
   });
 } else document.documentElement.classList.remove('js');
 
@@ -27,121 +26,13 @@ if(matchMedia('(hover:hover) and (pointer:fine)').matches){
   });
 }
 
-/* Sortiment: „… anfragen“ wählt das Produkt im Formular vor */
-document.querySelectorAll('[data-anlass]').forEach(a=>a.addEventListener('click',()=>{
-  const sel=document.getElementById('fOcc'), want=a.dataset.anlass;
-  const opt=[...sel.options].find(o=>o.text===want); if(opt) sel.value=opt.text;
-}));
-
-/* ---------- Konfigurator (PLATZHALTERPREISE: hier anpassen) ---------- */
-const PREISE = {
-  groesse: { 10:{basis:79, weiterePerson:49}, 15:{basis:119, weiterePerson:69}, 20:{basis:159, weiterePerson:89}, 25:{basis:209, weiterePerson:119} },
-  sockel:  { rund:{name:'Rund, schwarz', info:'klassisch', preis:0}, stein:{name:'Steinsockel', info:'Felsen-Optik', preis:15}, gravur:{name:'Mit Gravur', info:'Name oder Datum', preis:12} },
-  extras:  { box:{name:'Geschenkbox', preis:9}, zweite:{name:'Zweite Figur gleich mitdrucken', preis:'50%'}, express:{name:'Express-Fertigung', preis:29} }
-};
-const SCHICHT_MM = 0.12;
-const state = {size:15, persons:1, base:'rund', extras:new Set()};
-
-Object.keys(PREISE.groesse).forEach(cm=>{
-  const h = 26 + (cm-10)*2.5;
-  $('sizes').insertAdjacentHTML('beforeend',`<label class="opt"><input type="radio" name="size" value="${cm}" ${+cm===state.size?'checked':''}><span class="opt__box"><span class="opt__fig"><svg viewBox="0 0 40 100" style="height:${h}px"><use href="#figur"/></svg></span><b>${cm} cm</b><span>ab ${fmtEUR(PREISE.groesse[cm].basis)}</span></span></label>`);
-});
-Object.entries(PREISE.sockel).forEach(([k,v])=>{
-  $('bases').insertAdjacentHTML('beforeend',`<label class="opt"><input type="radio" name="base" value="${k}" ${k===state.base?'checked':''}><span class="opt__box"><b style="font-size:21px">${v.name}</b><span>${v.info}, ${v.preis?'+ '+fmtEUR(v.preis):'inklusive'}</span></span></label>`);
-});
-Object.entries(PREISE.extras).forEach(([k,v])=>{
-  $('extras').insertAdjacentHTML('beforeend',`<label class="check"><input type="checkbox" value="${k}"><span>${v.name}</span><em>+ ${typeof v.preis==='string'?v.preis:fmtEUR(v.preis)}</em></label>`);
-});
-$('sizes').addEventListener('change',e=>{state.size=+e.target.value;update();studio.setSize(state.size)});
-$('bases').addEventListener('change',e=>{state.base=e.target.value;update()});
-$('extras').addEventListener('change',e=>{e.target.checked?state.extras.add(e.target.value):state.extras.delete(e.target.value);update()});
-$('pMinus').onclick=()=>{if(state.persons>1){state.persons--;update()}};
-$('pPlus').onclick=()=>{if(state.persons<6){state.persons++;update()}};
-
-function calc(){
-  const g = PREISE.groesse[state.size];
-  const rows = [[`Figur, ${state.size} cm`, g.basis]];
-  if(state.persons>1) rows.push([`${state.persons-1} weitere Person${state.persons>2?'en':''}`, g.weiterePerson*(state.persons-1)]);
-  const s = PREISE.sockel[state.base]; rows.push([`Sockel: ${s.name}`, s.preis]);
-  const sub = rows.reduce((a,r)=>a+r[1],0);
-  state.extras.forEach(k=>{const x=PREISE.extras[k]; rows.push([x.name, typeof x.preis==='string' ? Math.round(sub*parseFloat(x.preis)/100) : x.preis]);});
-  return {rows,total:rows.reduce((a,r)=>a+r[1],0)};
-}
-function tween(el,to,fmt){
-  const from = +el.dataset.v || 0; el.dataset.v = to;
-  if(reduce || from===to){ el.textContent = fmt(to); return; }
-  const t0 = performance.now();
-  const tick = t => { const k=Math.min(1,(t-t0)/420), e=1-Math.pow(1-k,3); el.textContent = fmt(Math.round(from+(to-from)*e)); if(k<1) requestAnimationFrame(tick); };
-  requestAnimationFrame(tick);
-}
-function update(){
-  const {rows,total} = calc();
-  $('sumList').innerHTML = rows.map(r=>`<dt>${r[0]}</dt><dd class="num">${r[1]?fmtEUR(r[1]):'inklusive'}</dd>`).join('');
-  $('pOut').textContent = state.persons+(state.persons>1?' Personen':' Person');
-  $('crowd').innerHTML = Array.from({length:state.persons},()=>'<svg viewBox="0 0 40 100"><use href="#figur"/></svg>').join('');
-  tween($('total'), total, fmtEUR);
-  tween($('layerCount'), Math.round(state.size*10/SCHICHT_MM), n=>n.toLocaleString('de-DE'));
-  const figs = state.extras.has('zweite') ? 2 : 1;
-  $('figCount').textContent = figs;
-  $('figCount').nextSibling.textContent = state.persons>1 ? `Figur${figs>1?'en':''} mit ${state.persons} Personen` : `Figur${figs>1?'en':''} auf einem Sockel`;
-  $('cfgText').textContent = cfgSummary(total);
-  buildMail(false);
-}
-function cfgSummary(total){
-  const ex=[...state.extras].map(k=>PREISE.extras[k].name);
-  return `${state.size} cm, ${state.persons} ${state.persons>1?'Personen':'Person'}, ${PREISE.sockel[state.base].name}${ex.length?', '+ex.join(', '):''} (Richtpreis ${fmtEUR(total)})`;
-}
-
-/* ---------- Anfrage ---------- */
-const form=$('inq'), ADDR='info@winheller-3d.com';
-let mailReady=false;
-function buildMail(fromSubmit){
-  const name=form.name.value.trim(), mail=form.email.value.trim();
-  const okName=!!name, okMail=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail);
-  if(fromSubmit){
-    $('eName').textContent = okName?'':'Bitte gib deinen Namen ein.';
-    $('eMail').textContent = okMail?'':'Bitte gib eine gültige E-Mail-Adresse ein, zum Beispiel name@beispiel.de.';
-  }
-  if(!(okName&&okMail)){ if(fromSubmit){ $('status').textContent=''; (okName?form.email:form.name).focus(); } return; }
-  if(!fromSubmit && !mailReady) return;
-  const {total}=calc();
-  const d=form.termin.value?new Date(form.termin.value).toLocaleDateString('de-DE'):'flexibel';
-  const subject=`Figurenanfrage von ${name}`;
-  const body=`Hallo Winheller 3D Manufaktur,
-
-ich möchte gern eine Figur anfragen.
-
-Name: ${name}
-E-Mail: ${mail}
-Anlass: ${form.anlass.value}
-Wunschtermin: ${d}
-
-Auswahl: ${cfgSummary(total)}
-
-Das soll die Figur zeigen:
-${form.nachricht.value.trim()||'(siehe Fotos)'}
-
-Meine Fotos hänge ich an diese E-Mail an.
-
-Viele Grüße
-${name}`;
-  $('mailText').textContent=`Betreff: ${subject}\n\n${body}`;
-  const mt=$('mailto'); mt.href=`mailto:${ADDR}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`; mt.hidden=false;
-  $('copyMail').disabled=false;
-  mailReady=true;
-  if(fromSubmit) $('status').textContent='E-Mail erstellt. Öffne sie im Mailprogramm oder kopiere den Text, und häng deine Fotos an.';
-}
-form.addEventListener('submit',e=>{e.preventDefault(); buildMail(true);});
-form.addEventListener('input',()=>{ if(mailReady) buildMail(false); });
-function copy(text,btn,el){
-  const label=btn.textContent;
+/* Anfrage: Adresse kopieren */
+$('copyAddr').addEventListener('click',e=>{
+  const btn=e.currentTarget, addr=btn.dataset.copy, label=btn.textContent;
   const done=()=>{btn.textContent='Kopiert';setTimeout(()=>btn.textContent=label,1600)};
-  const fallback=()=>{const r=document.createRange();r.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(r);$('status').textContent='Text ist markiert. Kopiere ihn mit Strg+C oder ⌘+C.'};
-  try{ navigator.clipboard.writeText(text).then(done,fallback); }catch(_){ fallback(); }
-}
-$('copyAddr').onclick=e=>copy(ADDR,e.currentTarget,$('addr'));
-$('copyMail').onclick=e=>copy($('mailText').textContent,e.currentTarget,$('mailText'));
-$('mailto').addEventListener('click',()=>{$('status').textContent='Kein Mailprogramm geöffnet? Kopiere den Text und schick ihn an info@winheller-3d.com.'});
+  const fallback=()=>{$('status').textContent='Bitte markiere die Adresse oben und kopiere sie mit Strg+C oder ⌘+C.'};
+  try{ navigator.clipboard.writeText(addr).then(done,fallback); }catch(_){ fallback(); }
+});
 
 /* ---------- 3D-Druckplatte im Hero ---------- */
 const studio = (function(){
@@ -297,6 +188,4 @@ const studio = (function(){
   return api;
 })();
 
-update();
-studio.setSize(state.size);
 })();
