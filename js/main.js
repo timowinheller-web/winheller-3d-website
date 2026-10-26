@@ -22,7 +22,9 @@ if(!reduce && 'IntersectionObserver' in window){
 /* Glas: Lichtreflex folgt dem Zeiger (nur mit Maus) */
 if(matchMedia('(hover:hover) and (pointer:fine)').matches){
   document.querySelectorAll('.glass').forEach(el=>{
-    el.addEventListener('pointermove',e=>{ const r=el.getBoundingClientRect(); el.style.setProperty('--mx',(e.clientX-r.left)+'px'); el.style.setProperty('--my',(e.clientY-r.top)+'px'); });
+    let pend=false, px=0, py=0;
+    el.addEventListener('pointermove',e=>{ px=e.clientX; py=e.clientY; if(pend) return; pend=true;
+      requestAnimationFrame(()=>{ pend=false; const r=el.getBoundingClientRect(); el.style.setProperty('--mx',(px-r.left)+'px'); el.style.setProperty('--my',(py-r.top)+'px'); }); },{passive:true});
   });
 }
 
@@ -44,7 +46,7 @@ const studio = (function(){
   if(!renderer.getContext()) return api;
   $('fallback').remove();
   ['hint','readout','dock'].forEach(id=>$(id).hidden=false);
-  renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+  renderer.setPixelRatio(Math.min(matchMedia('(max-width:900px)').matches?1.25:1.5, window.devicePixelRatio||1));
   renderer.setClearColor(0x000000,0);
   renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   renderer.localClippingEnabled=true;
@@ -158,10 +160,10 @@ const studio = (function(){
 
   function startPrint(){ printing=true; pStart=performance.now(); ring.visible=nozzle.visible=true; $('printBtn').disabled=true; }
   $('printBtn').onclick=startPrint;
-  clip.constant=0; setHud(0);
-  let seen=false;
-  onReady=()=>{ if(seen) startPrint(); };
-  new IntersectionObserver((es,o)=>{ if(es[0].isIntersecting){ seen=true; if(ready) startPrint(); o.disconnect(); } },{threshold:.45}).observe(stage);
+  clip.constant=0; setHud(0);  // bis das Modell geladen ist
+  // Figur ist sofort ganz zu sehen. Ist die Bühne beim Laden schon im Bild, druckt sie sich einmal auf.
+  const inView=()=>{ const r=stage.getBoundingClientRect(); return r.top<innerHeight*0.8 && r.bottom>innerHeight*0.2; };
+  onReady=()=>{ if(inView()) startPrint(); else { clip.constant=100; setHud(FIG_H); } };
 
   function resize(){ const w=stage.clientWidth, h=stage.clientHeight; renderer.setSize(w,h,false); cam.aspect=w/h; cam.fov = w/h<.9 ? 36 : 30; cam.updateProjectionMatrix(); }
   new ResizeObserver(resize).observe(stage); resize();

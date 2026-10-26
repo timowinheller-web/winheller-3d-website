@@ -445,3 +445,24 @@ details[open]{background:rgba(255,255,255,.72)}
 .checklist{margin:0;padding-left:1.3em;display:grid;gap:var(--s4);color:var(--nacht-text);font-size:var(--t-s)}
 .checklist li::marker{color:var(--gold);font-family:var(--f-head);font-weight:700}
 .checklist b{display:block;color:#fff;font-weight:600;font-size:var(--t-m);margin-bottom:2px}
+
+/* =========================================================
+   Flüssig: Glas ohne Live-Unschärfe.
+   Die Kulissen sind schon weich (winzige Bilder, hochskaliert), darum reicht halbtransparentes Weiß/Schwarz
+   auf den Flächen. Live-Blur (backdrop-filter) bleibt nur für die Navigation.
+   ========================================================= */
+:root{--glass-light:rgba(255,255,255,.7);--glass-dark:rgba(28,28,28,.74)}
+.glass,.chip,.opt__box,.check,.stepper,details,.tag,.pick,.field input,.field select,.field textarea{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.chip{background:rgba(255,255,255,.86)}
+.chip[aria-pressed="true"]{background:rgba(30,30,30,.9)}
+.ticket.glass{background:rgba(24,24,24,.86)}
+/* Kulissenbilder: 40 px kleine Vorschauen, vom Browser weich hochskaliert, statt filter:blur auf großen Flächen */
+.backdrop::before{filter:none!important;transform:none}
+.backdrop--hero::before{background-image:url(../img/blur/schritt-3.jpg)}
+.backdrop--preise::before{background-image:url(../img/blur/schritt-2.jpg)}
+.backdrop--anfrage::before{background-image:url(../img/blur/schritt-1.jpg)}
+.backdrop--produkte::before{background-image:url(../img/blur/schritt-3.jpg)}
+.backdrop--werkstatt::before{background-image:url(../img/blur/designlampe.jpg)}
+.backdrop--sortiment::before{background-image:url(../img/blur/fotolampe.jpg)}
+/* Lichtkreise: weiche Kante per Maske statt 70-px-Blur */
+.backdrop i{filter:none!important;-webkit-mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.5) 45%,transparent 100%);mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.5) 45%,transparent 100%)}
