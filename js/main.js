@@ -10,10 +10,16 @@ const nav = $('nav');
 const onScroll = () => nav.classList.toggle('is-scrolled', scrollY > 8);
 addEventListener('scroll', onScroll, {passive:true}); onScroll();
 
+/* Handy-Menü: nach Klick auf einen Link schließen */
+const menu=$('menu'); if(menu){ menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.removeAttribute('open'))); addEventListener('click',e=>{ if(menu.open && !menu.contains(e.target)) menu.removeAttribute('open'); }); }
+
 /* Abschnitte: Überschrift, Text, Inhalt treten nacheinander ein */
 if(!reduce && 'IntersectionObserver' in window){
   window.__rv=true;
-  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }),{rootMargin:'0px 0px -12% 0px'});
+  const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting || e.boundingClientRect.top<0){ e.target.classList.add('in'); io.unobserve(e.target); } }),{rootMargin:'0px 0px -12% 0px'});
+  // Schnell vorbeigescrollte Teile (Sprung per Anker, Wischen) ohne Zwischenschritt einblenden
+  let rvPend=false; const rvSweep=()=>{ rvPend=false; document.querySelectorAll('.rv:not(.in)').forEach(el=>{ if(el.getBoundingClientRect().top<innerHeight){ el.classList.add('in'); io.unobserve(el); } }); };
+  addEventListener('scroll',()=>{ if(!rvPend){ rvPend=true; requestAnimationFrame(rvSweep); } },{passive:true});
   document.querySelectorAll('.band').forEach(sec=>{
     sec.querySelectorAll('.head h2, .head .lede, .flow__step, .stat, .mats, .item, .idea, .mail, .faq > div:first-child, .faq__list').forEach((el,i)=>{ el.classList.add('rv'); el.style.setProperty('--i',i); io.observe(el); });
   });
@@ -36,16 +42,17 @@ $('copyAddr').addEventListener('click',e=>{
   try{ navigator.clipboard.writeText(addr).then(done,fallback); }catch(_){ fallback(); }
 });
 
-/* ---------- 3D-Druckplatte im Hero ---------- */
-const studio = (function(){
+/* ---------- 3D-Druckplatte im Hero ----------
+   three.js und das Modell (3,5 MB) kommen erst, wenn die Seite fertig geladen ist.
+   Bis dahin steht das Standbild (img/hero.webp) in der Bühne. */
+function initStudio(){
   const stage=$('stage');
   const api={setSize(){}};
   if(!window.THREE) return api;
   let renderer;
   try{ renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); }catch(e){ return api; }
   if(!renderer.getContext()) return api;
-  $('fallback').remove();
-  ['hint','readout','dock'].forEach(id=>$(id).hidden=false);
+  const stage$=stage;
   renderer.setPixelRatio(Math.min(matchMedia('(max-width:900px)').matches?1.25:1.5, window.devicePixelRatio||1));
   renderer.setClearColor(0x000000,0);
   renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -163,7 +170,12 @@ const studio = (function(){
   clip.constant=0; setHud(0);  // bis das Modell geladen ist
   // Figur ist sofort ganz zu sehen. Ist die Bühne beim Laden schon im Bild, druckt sie sich einmal auf.
   const inView=()=>{ const r=stage.getBoundingClientRect(); return r.top<innerHeight*0.8 && r.bottom>innerHeight*0.2; };
-  onReady=()=>{ if(inView()) startPrint(); else { clip.constant=100; setHud(FIG_H); } };
+  onReady=()=>{
+    clip.constant=100; setHud(FIG_H);
+    ['hint','readout','dock'].forEach(id=>$(id).hidden=false);
+    stage$.classList.add('is-ready');
+    setTimeout(()=>{ const f=$('fallback'); if(f) f.remove(); if(inView() && !reduce) startPrint(); }, 450);
+  };
 
   function resize(){ const w=stage.clientWidth, h=stage.clientHeight; renderer.setSize(w,h,false); cam.aspect=w/h; cam.fov = w/h<.9 ? 36 : 30; cam.updateProjectionMatrix(); }
   new ResizeObserver(resize).observe(stage); resize();
@@ -188,6 +200,24 @@ const studio = (function(){
   }
   requestAnimationFrame(loop);
   return api;
+}
+
+/* Nachladen: Desktop nach dem Laden im Leerlauf; Handy nach der ersten Berührung oder spätestens nach 4 s.
+   Bei aktiviertem Datensparmodus erst, wenn die Bühne angetippt wird. */
+(function(){
+  const stage=$('stage'); if(!stage) return;
+  let started=false;
+  const add=src=>new Promise((res,rej)=>{ const sc=document.createElement('script'); sc.src=src; sc.onload=res; sc.onerror=rej; document.body.appendChild(sc); });
+  const start=()=>{ if(started) return; started=true; add('js/three.min.js').then(()=>add('js/GLTFLoader.js')).then(initStudio).catch(()=>{}); };
+  const idle=cb=>('requestIdleCallback' in window)?requestIdleCallback(cb,{timeout:2000}):setTimeout(cb,300);
+  const saveData=navigator.connection && navigator.connection.saveData;
+  const mobile=matchMedia('(max-width:900px)').matches;
+  const onLoad=()=>{
+    if(saveData){ stage.addEventListener('pointerdown',start,{once:true}); return; }
+    if(mobile){ ['pointerdown','touchstart','scroll','keydown'].forEach(ev=>addEventListener(ev,()=>idle(start),{once:true,passive:true})); setTimeout(()=>idle(start),4000); }
+    else idle(start);
+  };
+  if(document.readyState==='complete') onLoad(); else addEventListener('load',onLoad,{once:true});
 })();
 
 })();
