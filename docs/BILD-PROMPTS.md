@@ -134,11 +134,11 @@ surface) for text overlay. Landscape format, figurines on the left, window light
 | 3 ⚠️ erzeugt 29.10., nicht eingebaut (Text „Happy Birthday“ im Bild; Ablauf-Serie bleibt beim Hoodie-Mann) | – | Ablauf, Schritt 3 „Gedruckt und verschickt“ | Zwei Hände überreichen eine kleine 3D-gedruckte Figur, im Hintergrund ein Geburtstagstisch |
 | 4 ✅ erzeugt 29.10. | `img/katalog/figur-paar-400/800.webp` (Datei heißt noch figur-paar) | Sortiment, „Deine Figur“ | Familienfigur aus dem 3D-Drucker: Vater, Mutter und Kind auf einem gemeinsamen Sockel im Wohnzimmerregal |
 | 5 ✅ erzeugt 29.10. | `img/detail-gesicht-400/800.webp` | Werkstatt, neben den Kennzahlen (0,25-mm-Düse) | Makroaufnahme des Gesichts einer 3D-gedruckten Figur mit feinen Schichtlinien |
-| 6 ⚠️ erzeugt, verworfen (Markenlogo auf den Sneakern), neu generieren mit „plain white sneakers without logos“ | – | Sortiment, „Deine Figur“ (Option Sockel mit Namen) | Schwarzer Figurensockel mit erhabenem Namen und Datum in Gold |
-| 7 ⏳ offen (Credits leer) | `img/verpackung.webp` | Anfrage-Abschnitt, Kulisse oder Checkliste | Figur eines Mannes mit Hund in einer geöffneten schwarzen Geschenkbox auf Seidenpapier |
+| 6 ✅ (ChatGPT, 29.10.) | `img/detail-sockel-400/800.webp`, Werkstatt unter dem Gesicht | Sortiment, „Deine Figur“ (Option Sockel mit Namen) | Schwarzer Figurensockel mit erhabenem Namen und Datum in Gold |
+| 7 ✅ (ChatGPT, 29.10.) | `img/verpackung-400/800.webp` | Anfrage-Abschnitt, Kulisse oder Checkliste | Figur eines Mannes mit Hund in einer geöffneten schwarzen Geschenkbox auf Seidenpapier |
 | 8 ⏳ offen (Credits leer) | `img/werkstatt.webp` | Werkstatt, „Was unser Drucker kann“ | Halb fertige Figur auf der Druckplatte eines 3D-Druckers, Filamentspulen im Hintergrund |
-| 9 | `img/katalog/tier.webp` | Sortiment, „Dein Tier als Figur“ | Dackel-Figur aus dem 3D-Drucker auf schwarzem Sockel neben Napf und Leine |
-| 10 | `img/og.jpg` (1200 × 630) | `og:image` und `twitter:image` im `<head>` | kein Alt-Text nötig (Meta-Bild) |
+| 9 ✅ (ChatGPT, 29.10.) | `img/katalog/tier-400/800.webp` | Sortiment, „Dein Tier als Figur“ | Dackel-Figur aus dem 3D-Drucker auf schwarzem Sockel neben Napf und Leine |
+| 10 ✅ (ChatGPT, 29.10.) | `img/og.jpg` aus `docs/bilder-quellen/10-og.png` + `tools/og.html` | `og:image` und `twitter:image` im `<head>` | kein Alt-Text nötig (Meta-Bild) |
 
 Einbau wie bei den vorhandenen Bildern: `tools/make_images.py <quelle> <ziel-basisname>` erzeugt die
 drei Breiten (400/800/1200 px) als WebP, im HTML dann `srcset` und `sizes` wie bei den Katalogbildern.

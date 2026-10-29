@@ -284,8 +284,12 @@ p{margin:0}
 
 
 /* Anfrage */
-.ask{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s12)}
-@media (max-width:960px){.ask{grid-template-columns:1fr}}
+.ask{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.1fr) minmax(0,1.1fr);gap:var(--s8);align-items:start}
+@media (max-width:960px){.ask{grid-template-columns:1fr;gap:var(--s6)}}
+.ask__media{margin:0;border-radius:22px;overflow:hidden;background:#262525}
+.ask__media img{width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
+.ask__media figcaption{font-size:var(--t-s);color:var(--nacht-text);padding:12px 16px}
+@media (max-width:960px){.ask__media img{aspect-ratio:4/3}}
 .mail{background:#2a2929;padding:var(--s6);display:grid;gap:var(--s4);align-content:start}
 .mail__btns{display:flex;gap:var(--s3);flex-wrap:wrap}
 .status{font-size:var(--t-s);color:var(--gold);min-height:1.4em}
@@ -428,8 +432,10 @@ details[open]{background:rgba(255,255,255,.72)}
 .backdrop--werkstatt i:nth-child(1){width:560px;height:560px;left:-140px;top:-120px;background:#E3B357;opacity:.28}
 .backdrop--werkstatt i:nth-child(2){width:420px;height:420px;right:10%;bottom:-160px;background:#fff;opacity:.9}
 .backdrop--werkstatt i:nth-child(3){display:none}
-.werk{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:var(--s8);align-items:center;margin-bottom:var(--s8)}
-@media (max-width:900px){.werk{grid-template-columns:1fr;gap:var(--s6)}}
+.werk{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-areas:"a b" "c b";gap:var(--s6) var(--s8);align-items:center;margin-bottom:var(--s8)}
+.werk > .werk__media:first-child{grid-area:a}.werk__media--wide{grid-area:c}.werk .stats{grid-area:b}
+.werk__media--wide img{aspect-ratio:16/9;object-position:50% 70%}
+@media (max-width:900px){.werk{grid-template-columns:1fr;grid-template-areas:"a" "b" "c";gap:var(--s6)}}
 .werk__media{margin:0;border-radius:22px;overflow:hidden;background:var(--marmor-2)}
 .werk__media img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
 .werk__media figcaption{font-size:var(--t-s);color:var(--anthrazit);padding:12px 16px;background:rgba(255,255,255,.7)}
