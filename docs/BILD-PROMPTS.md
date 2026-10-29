@@ -129,7 +129,7 @@ surface) for text overlay. Landscape format, figurines on the left, window light
 
 | Nr. | Datei (Vorschlag) | Stelle auf der Seite | Alt-Text (DE) |
 |---|---|---|---|
-| 1 | `img/hero.webp` (+ `-400`, `-800`) | Hero, Standbild vor dem 3D-Modell und Fallback ohne WebGL | Paarfigur aus dem 3D-Drucker auf einem Holzschreibtisch neben Kaffeetasse und Notizbuch |
+| 1 ✅ erzeugt 29.10. (nano banana) | `img/hero-400/800.webp`, auch `img/katalog/figur-paar-*.webp` | Hero, Standbild vor dem 3D-Modell und Fallback ohne WebGL | Paarfigur aus dem 3D-Drucker auf einem Holzschreibtisch neben Kaffeetasse und Notizbuch |
 | 2 | `img/katalog/hochzeit.webp` | Sortiment, „Hochzeit & Feste“ | Brautpaar-Figur aus dem 3D-Drucker vor geöffneter schwarzer Geschenkbox mit Satinband |
 | 3 | `img/schritt-3.webp` | Ablauf, Schritt 3 „Gedruckt und verschickt“ | Zwei Hände überreichen eine kleine 3D-gedruckte Figur, im Hintergrund ein Geburtstagstisch |
 | 4 | `img/katalog/figur-paar.webp` | Sortiment, „Deine Figur“ | Familienfigur aus dem 3D-Drucker: Vater, Mutter und Kind auf einem gemeinsamen Sockel im Wohnzimmerregal |
