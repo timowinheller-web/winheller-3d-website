@@ -130,9 +130,9 @@ surface) for text overlay. Landscape format, figurines on the left, window light
 | Nr. | Datei (Vorschlag) | Stelle auf der Seite | Alt-Text (DE) |
 |---|---|---|---|
 | 1 ✅ erzeugt 29.10. (nano banana) | `img/hero-400/800.webp`, auch `img/katalog/figur-paar-*.webp` | Hero, Standbild vor dem 3D-Modell und Fallback ohne WebGL | Paarfigur aus dem 3D-Drucker auf einem Holzschreibtisch neben Kaffeetasse und Notizbuch |
-| 2 | `img/katalog/hochzeit.webp` | Sortiment, „Hochzeit & Feste“ | Brautpaar-Figur aus dem 3D-Drucker vor geöffneter schwarzer Geschenkbox mit Satinband |
-| 3 | `img/schritt-3.webp` | Ablauf, Schritt 3 „Gedruckt und verschickt“ | Zwei Hände überreichen eine kleine 3D-gedruckte Figur, im Hintergrund ein Geburtstagstisch |
-| 4 | `img/katalog/figur-paar.webp` | Sortiment, „Deine Figur“ | Familienfigur aus dem 3D-Drucker: Vater, Mutter und Kind auf einem gemeinsamen Sockel im Wohnzimmerregal |
+| 2 ✅ erzeugt 29.10. | `img/katalog/hochzeit-400/800.webp` | Sortiment, „Hochzeit & Feste“ | Brautpaar-Figur aus dem 3D-Drucker vor geöffneter schwarzer Geschenkbox mit Satinband |
+| 3 ⚠️ erzeugt 29.10., nicht eingebaut (Text „Happy Birthday“ im Bild; Ablauf-Serie bleibt beim Hoodie-Mann) | – | Ablauf, Schritt 3 „Gedruckt und verschickt“ | Zwei Hände überreichen eine kleine 3D-gedruckte Figur, im Hintergrund ein Geburtstagstisch |
+| 4 ✅ erzeugt 29.10. | `img/katalog/figur-paar-400/800.webp` (Datei heißt noch figur-paar) | Sortiment, „Deine Figur“ | Familienfigur aus dem 3D-Drucker: Vater, Mutter und Kind auf einem gemeinsamen Sockel im Wohnzimmerregal |
 | 5 | `img/detail-gesicht.webp` | Werkstatt, neben den Kennzahlen (0,25-mm-Düse) | Makroaufnahme des Gesichts einer 3D-gedruckten Figur mit feinen Schichtlinien |
 | 6 | `img/detail-sockel.webp` | Sortiment, „Deine Figur“ (Option Sockel mit Namen) | Schwarzer Figurensockel mit erhabenem Namen und Datum in Gold |
 | 7 | `img/verpackung.webp` | Anfrage-Abschnitt, Kulisse oder Checkliste | Figur eines Mannes mit Hund in einer geöffneten schwarzen Geschenkbox auf Seidenpapier |
@@ -142,6 +142,8 @@ surface) for text overlay. Landscape format, figurines on the left, window light
 
 Einbau wie bei den vorhandenen Bildern: `tools/make_images.py <quelle> <ziel-basisname>` erzeugt die
 drei Breiten (400/800/1200 px) als WebP, im HTML dann `srcset` und `sizes` wie bei den Katalogbildern.
+
+Quelldateien (PNG 896 × 1200) liegen in `docs/bilder-quellen/`.
 
 ## Was die Bilder nicht zeigen dürfen
 
