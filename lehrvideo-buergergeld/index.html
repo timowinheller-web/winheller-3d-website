@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bürgergeld-Anspruch berechnen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Lehrvideo in 6 Kapiteln: Bürgergeld-Anspruch nach SGB II berechnen – Prüfschema, Bedarfsgemeinschaft, Bedarfe, Einkommen, Klausur-Checkliste.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Nunito:wght@400;700;800&display=swap">
+<style>
+/* Layout: ein dunkler Video-Player (Kopfzeile mit Prüfschritt-Balken, Bühne, Untertitel, Steuerleiste). Bewusst Single-Theme dunkel. */
+:root{
+  --bg:#0D1321; --stage:#131B2E; --panel:#1A2540; --panel2:#223052; --line:#2F4068;
+  --fg:#F3F6FC; --muted:#A3B1CC; --dim:#6E7D9C;
+  --bedarf:#3B82F6; --bedarf-soft:rgba(59,130,246,.18);
+  --eink:#EF4444;   --eink-soft:rgba(239,68,68,.18);
+  --frei:#22C55E;   --frei-soft:rgba(34,197,94,.18);
+  --ansp:#F2B544;   --ansp-soft:rgba(242,181,68,.2);
+  --accent:#7DD3FC;
+  --p-frau:#D8B4FE; --p-mann:#7DD3FC; --p-k1:#F9A8D4; --p-k2:#A5B4FC; --p-x:#94A3B8;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px}
+#app{height:100%;max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:8px;min-height:0}
+button{font:inherit;color:inherit;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+button:hover{background:var(--line)}
+button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--ansp);color:#1A1200;border-color:var(--ansp);font-weight:800}
+button.primary:hover{filter:brightness(1.08)}
+select{font:inherit;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;max-width:180px}
+
+/* Kopfzeile */
+#top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:8px 14px;background:var(--panel);border-radius:12px}
+#chap{font-family:var(--display);font-size:1.35rem;font-weight:700;letter-spacing:.01em;display:flex;align-items:center;gap:10px;min-width:0}
+#chap .num{background:var(--accent);color:#06243A;border-radius:6px;padding:0 8px;font-size:1rem}
+#steps{flex:1 1 420px;min-width:0}
+#steps .lbl{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+#steps .lbl b{color:var(--fg);letter-spacing:0;text-transform:none;font-size:.9rem}
+#steps ol{list-style:none;margin:4px 0 0;padding:0;display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+#steps li{height:26px;border-radius:5px;background:var(--panel2);border:1px solid var(--line);font-size:.68rem;display:flex;align-items:center;justify-content:center;color:var(--dim);overflow:hidden;white-space:nowrap;padding:0 3px;transition:background .4s,color .4s}
+#steps li.done{background:var(--line);color:var(--muted)}
+#steps li.active{background:var(--ansp);color:#1A1200;font-weight:800;border-color:var(--ansp);box-shadow:0 0 0 3px var(--ansp-soft)}
+@media (max-width:640px){#steps li span{display:none}#steps li::before{content:attr(data-n)}}
+
+/* Bühne */
+#stage{flex:1 1 auto;min-height:0;position:relative;background:var(--stage);border-radius:14px;border:1px solid var(--line);overflow:hidden}
+#view{position:absolute;inset:0;padding:22px 26px;overflow:auto;display:flex;flex-direction:column;gap:14px}
+#view>*{flex-shrink:0}
+#view h2{font-family:var(--display);font-size:clamp(1.5rem,3.2vw,2.3rem);font-weight:700;margin:0;line-height:1.1;text-wrap:balance}
+#view h3{font-family:var(--display);font-size:1.3rem;margin:0;font-weight:600;color:var(--muted)}
+#view p{margin:0;max-width:62ch}
+.fade{animation:fadeIn .5s both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pop{animation:pop .45s both}
+@keyframes pop{0%{opacity:0;transform:scale(.9)}70%{transform:scale(1.03)}100%{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.fade,.pop,.row.new{animation:none}*{transition:none!important}}
+
+/* Titel / Hook */
+.title{height:100%;display:flex;flex-direction:column;justify-content:center;gap:18px;max-width:28ch}
+.title h2{font-size:clamp(2rem,5vw,3.6rem)}
+.title .eyebrow{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:800}
+.hook{font-size:clamp(1.1rem,2.2vw,1.5rem);color:var(--fg)}
+.hook::before{content:"?";display:inline-grid;place-items:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--ansp);color:#1A1200;font-weight:800;margin-right:.5em;font-family:var(--display)}
+
+/* Farblegende */
+.legend{display:flex;flex-wrap:wrap;gap:10px}
+.legend span{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-weight:700}
+.legend i{width:16px;height:16px;border-radius:4px;display:inline-block}
+.c-bedarf{color:var(--bedarf)} .c-eink{color:var(--eink)} .c-frei{color:var(--frei)} .c-ansp{color:var(--ansp)}
+.bg-bedarf{background:var(--bedarf)} .bg-eink{background:var(--eink)} .bg-frei{background:var(--frei)} .bg-ansp{background:var(--ansp)}
+
+/* Prüfschema */
+.schema{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;align-content:start}
+.schema .box{position:relative;background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:12px 12px 12px 14px;min-height:92px;transition:all .4s;opacity:.25}
+.schema .box.on{opacity:1}
+.schema .box.active{border-color:var(--ansp);box-shadow:0 0 0 4px var(--ansp-soft);transform:translateY(-3px)}
+.schema .box.last{border-color:var(--ansp);background:var(--ansp-soft)}
+.schema .n{font-family:var(--display);font-size:1.6rem;font-weight:700;color:var(--accent);line-height:1}
+.schema .box.last .n{color:var(--ansp)}
+.schema .t{font-weight:800;margin-top:4px;overflow-wrap:anywhere;hyphens:auto}
+.schema .s{font-size:.78rem;color:var(--muted)}
+.merk{background:var(--panel);border-left:6px solid var(--ansp);padding:12px 16px;border-radius:0 12px 12px 0;font-size:1.15rem;max-width:62ch}
+.merk b{color:var(--ansp)}
+.merk.blue{border-color:var(--bedarf)} .merk.blue b{color:var(--bedarf)}
+.merk.green{border-color:var(--frei)} .merk.green b{color:var(--frei)}
+.merk.red{border-color:var(--eink)} .merk.red b{color:var(--eink)}
+
+/* Familie */
+.home{position:relative;border:2px dashed var(--line);border-radius:18px;padding:30px 16px 12px;display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:12px 22px}
+.home::before{content:"Eine Wohnung";position:absolute;top:-11px;left:18px;background:var(--stage);padding:0 8px;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.person{display:flex;flex-direction:column;align-items:center;gap:6px;width:min(130px,42%);transition:opacity .4s,transform .4s;position:relative}
+.person.dim{opacity:.28}
+.person.hl{transform:translateY(-6px)}
+.person svg{width:70px;height:auto;display:block;overflow:visible}
+.person.kid svg{width:48px}
+.person .name{font-weight:800}
+.person .sub{font-size:.76rem;color:var(--muted);text-align:center;line-height:1.25}
+.person .badge{font-size:.72rem;padding:2px 8px;border-radius:999px;background:var(--panel2);border:1px solid var(--line)}
+.person .badge.ok{background:var(--frei-soft);border-color:var(--frei);color:#BBF7D0}
+.person .badge.no{background:var(--eink-soft);border-color:var(--eink);color:#FECACA}
+.person .badge.bg{background:var(--ansp-soft);border-color:var(--ansp);color:#FDE68A}
+.person .mark{position:absolute;top:-6px;right:14px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.9rem}
+.mark.ok{background:var(--frei);color:#052e16}.mark.no{background:var(--eink);color:#fff}.mark.q{background:var(--ansp);color:#1A1200}
+.fam-caption{font-size:1.05rem;max-width:70ch}
+
+/* Checkliste (Kriterien × Personen) */
+table.grid{border-collapse:collapse;width:100%;font-size:.95rem}
+table.grid th,table.grid td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center}
+table.grid th:first-child,table.grid td:first-child{text-align:left}
+table.grid thead th{color:var(--muted);font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.06em}
+table.grid tr.hide{display:none}
+.tick{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;font-weight:800}
+.tick.ok{background:var(--frei);color:#052e16}.tick.no{background:var(--eink);color:#fff}.tick.na{background:var(--panel2);color:var(--dim)}.tick.q{background:var(--ansp);color:#1A1200}
+
+/* Karten / Listen */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;align-content:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:none}
+.card.on{display:block}
+.card .tag{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:800}
+.card .head{font-weight:800;font-size:1.05rem;margin:2px 0}
+.card .txt{color:var(--muted);font-size:.9rem}
+.card.warn{border-color:var(--eink)} .card.warn .tag{color:var(--eink)}
+.card.good{border-color:var(--frei)} .card.good .tag{color:var(--frei)}
+.card.gold{border-color:var(--ansp)} .card.gold .tag{color:var(--ansp)}
+.card.hl{box-shadow:0 0 0 3px var(--ansp-soft);border-color:var(--ansp)}
+.list{display:flex;flex-direction:column;gap:8px;max-width:70ch}
+.list .it{display:none;align-items:flex-start;gap:12px;background:var(--panel);border-radius:10px;padding:10px 14px}
+.list .it.on{display:flex}
+.list .ic{flex:0 0 36px;height:36px;border-radius:9px;display:grid;place-items:center;font-weight:800;font-family:var(--display);font-size:1.1rem;background:var(--panel2)}
+.list .it.x .ic{background:var(--eink-soft);color:#FECACA}
+.list .it.ok .ic{background:var(--frei-soft);color:#BBF7D0}
+.list .it.gold .ic{background:var(--ansp-soft);color:#FDE68A}
+.list .it .t{font-weight:800}.list .it .s{color:var(--muted);font-size:.9rem}
+
+/* BG-Diagramm */
+.bgd{display:grid;grid-template-columns:1fr auto 1fr;gap:10px 16px;align-items:center}
+.bgd .center{grid-column:2;grid-row:1/4;align-self:center;background:var(--ansp-soft);border:2px solid var(--ansp);border-radius:14px;padding:12px 16px;text-align:center;min-width:160px}
+.bgd .center .n{font-family:var(--display);font-size:1.5rem;font-weight:700;color:var(--ansp)}
+.bgd .node{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px;opacity:.2;transition:opacity .4s}
+.bgd .node.on{opacity:1}
+.bgd .node.hl{border-color:var(--ansp);box-shadow:0 0 0 3px var(--ansp-soft)}
+.bgd .node .k{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:800}
+.bgd .node .t{font-weight:800}.bgd .node .s{font-size:.85rem;color:var(--muted)}
+@media (max-width:640px){.bgd{grid-template-columns:1fr}.bgd .center{grid-column:1;grid-row:auto}}
+
+/* Rechentabelle */
+.tbl-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--line);background:var(--panel)}
+table.calc{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;min-width:640px}
+table.calc th,table.calc td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.calc th:first-child,table.calc td:first-child{text-align:left;white-space:normal;min-width:190px}
+table.calc thead th{position:sticky;top:0;background:var(--panel2);font-weight:800}
+table.calc thead th.frau{color:var(--p-frau)}table.calc thead th.mann{color:var(--p-mann)}table.calc thead th.k1{color:var(--p-k1)}table.calc thead th.k2{color:var(--p-k2)}
+table.calc td.sum,table.calc th.sum{color:var(--muted);border-left:1px solid var(--line)}
+.row{transition:background .4s}
+.row.new{animation:rowIn .6s both}
+@keyframes rowIn{from{opacity:0;transform:translateX(-14px);background:var(--ansp-soft)}to{opacity:1;transform:none}}
+.row.b td{color:#BFDBFE}.row.b td:first-child::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--bedarf);margin-right:8px}
+.row.e td{color:#FECACA}.row.e td:first-child::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--eink);margin-right:8px}
+.row.g td{color:var(--frei)}.row.g td:first-child::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--frei);margin-right:8px}
+.row.a td{color:var(--ansp);font-weight:800;font-size:1.05rem}.row.a td:first-child::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--ansp);margin-right:8px}
+.row.n td{color:var(--muted);font-style:italic}
+.row.sum td{font-weight:800;border-top:2px solid var(--line)}
+.row.hl{background:var(--ansp-soft)}
+.row.hl td{color:var(--fg)}
+.calcnote{display:flex;flex-wrap:wrap;gap:8px}
+.calcnote span{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-variant-numeric:tabular-nums;font-size:.95rem}
+.calcnote span.b{border-color:var(--bedarf)} .calcnote span.e{border-color:var(--eink)} .calcnote span.g{border-color:var(--frei)} .calcnote span.a{border-color:var(--ansp);font-weight:800}
+
+/* Balken */
+.bars{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:end;height:min(46vh,330px);padding:0 6px}
+.bar{display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative}
+.bar .stack{position:relative;width:100%;background:var(--panel);border:2px solid var(--bedarf);border-radius:8px 8px 4px 4px;overflow:hidden;transition:height .8s ease;display:flex;flex-direction:column-reverse}
+.bar .seg{width:100%;transition:height .8s ease;display:grid;place-items:center;font-size:.72rem;font-weight:800;color:#fff;overflow:hidden}
+.bar .seg.rb{background:var(--bedarf)} .bar .seg.mb{background:#60A5FA} .bar .seg.kdu{background:#1D4ED8}
+.bar .seg.kg,.bar .seg.alg,.bar .seg.erw{background:var(--eink);border-top:1px solid rgba(0,0,0,.3)}
+.bar .seg.alg{background:#DC2626}.bar .seg.erw{background:#B91C1C}
+.bar .seg.ans{background:var(--ansp);color:#1A1200}
+.bar .cap{text-align:center;margin-top:6px;font-weight:800;font-size:.9rem}
+.bar .val{text-align:center;font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--muted)}
+.bar .val.a{color:var(--ansp);font-weight:800;font-size:1.05rem}
+.barlegend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.85rem;color:var(--muted)}
+.barlegend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* Freibetrag-Rechner */
+.fb{display:flex;flex-direction:column;gap:12px;max-width:820px}
+.fb .scale{position:relative;height:56px;background:var(--panel);border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.fb .seg{position:absolute;top:0;bottom:0;display:grid;place-items:center;font-size:.8rem;font-weight:800;transition:opacity .5s;opacity:0}
+.fb .seg.on{opacity:1}
+.fb .seg.brutto{background:var(--eink-soft);color:#FECACA;border-right:2px solid var(--eink)}
+.fb .seg.f1{background:var(--frei);color:#052e16}
+.fb .seg.f2{background:repeating-linear-gradient(135deg,var(--frei) 0 6px,#15803D 6px 12px);color:#052e16}
+.fb .seg.f3{background:repeating-linear-gradient(45deg,var(--frei) 0 4px,#166534 4px 8px);color:#fff}
+.fb .ticks{position:relative;height:18px;font-size:.72rem;color:var(--muted)}
+.fb .ticks span{position:absolute;transform:translateX(-50%)}
+.fb .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.fb .st{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;opacity:.2;transition:opacity .4s}
+.fb .st.on{opacity:1}
+.fb .st .k{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--frei);font-weight:800}
+.fb .st .v{font-family:var(--display);font-size:1.5rem;font-weight:700}
+.fb .st.r .k{color:var(--eink)}.fb .st.r .v{color:#FECACA}
+
+/* Regelbedarfsstufen */
+.rbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.rbs .st{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;position:relative;opacity:.3;transition:all .4s}
+.rbs .st.on{opacity:1}
+.rbs .st.hl{border-color:var(--bedarf);box-shadow:0 0 0 3px var(--bedarf-soft)}
+.rbs .k{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.rbs .v{font-family:var(--display);font-size:1.7rem;font-weight:700;color:var(--bedarf)}
+.rbs .w{font-size:.85rem}
+.rbs .who{position:absolute;top:8px;right:8px;display:flex;gap:3px}
+.rbs .who i{width:12px;height:12px;border-radius:50%;display:inline-block}
+
+/* Vergleich */
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.cmp .col{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:14px 16px}
+.cmp .col h3{color:var(--fg);font-size:1.6rem}
+.cmp .col.a48{border-color:var(--frei)} .cmp .col.a45{border-color:var(--eink)}
+.cmp ul{margin:8px 0 0;padding-left:18px;color:var(--muted)}
+.cmp li{margin:4px 0}
+.cmp .q{font-size:1.15rem;font-weight:800;margin-top:6px}
+
+/* Zusammenfassung */
+.sum3{display:flex;flex-direction:column;gap:10px;max-width:70ch}
+.sum3 .s{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border-radius:12px;padding:12px 16px;font-size:1.1rem}
+.sum3 .s b{flex:0 0 34px;height:34px;border-radius:50%;background:var(--ansp);color:#1A1200;display:grid;place-items:center;font-family:var(--display);font-size:1.2rem}
+
+/* Quiz */
+#quiz{position:absolute;inset:0;background:rgba(13,19,33,.97);display:flex;flex-direction:column;justify-content:center;padding:24px;gap:14px;overflow:auto}
+#quiz .pause{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;background:var(--ansp);color:#1A1200;font-weight:800;padding:6px 14px;border-radius:999px;animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.55}}
+#quiz h2{font-family:var(--display);font-size:clamp(1.4rem,3vw,2.2rem);margin:0;max-width:40ch;text-wrap:balance}
+#quiz .opts{display:flex;flex-direction:column;gap:8px;max-width:620px}
+#quiz .opt{text-align:left;padding:10px 14px;font-size:1.05rem;display:flex;gap:12px;align-items:center}
+#quiz .opt .l{font-family:var(--display);font-weight:700;background:var(--panel);width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex:0 0 30px}
+#quiz .opt.right{border-color:var(--frei);background:var(--frei-soft)}
+#quiz .opt.wrong{border-color:var(--eink);background:var(--eink-soft);opacity:.7}
+#quiz .ring{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.9rem}
+#quiz .ring i{display:inline-block;height:8px;border-radius:4px;background:var(--ansp);width:0;transition:width 1s linear}
+#quiz .expl{background:var(--panel);border-left:6px solid var(--frei);padding:12px 16px;border-radius:0 12px 12px 0;max-width:70ch;font-size:1.05rem}
+
+/* Übungstabelle */
+table.calc td.blank{color:var(--dim);letter-spacing:.2em}
+table.calc.practice td.blank::after{content:"_____"}
+
+/* Untertitel + Steuerung */
+#subs{min-height:62px;background:var(--panel);border-radius:12px;padding:10px 16px;font-size:clamp(1rem,1.6vw,1.2rem);display:flex;align-items:center;gap:12px}
+#subs .who{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background:var(--accent);color:#06243A;display:grid;place-items:center;font-weight:800;font-family:var(--display)}
+#subs .txt{min-width:0}
+#ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:6px 10px;background:var(--panel);border-radius:12px}
+#ctl .grow{flex:1 1 120px}
+#ctl .time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.9rem;white-space:nowrap}
+#ctl .chaps{display:flex;gap:4px}
+#ctl .chaps button{padding:4px 9px;font-weight:800}
+#ctl .chaps button.cur{background:var(--accent);color:#06243A;border-color:var(--accent)}
+#ctl label{font-size:.85rem;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+#seek{flex:1 1 100%;height:8px;background:var(--panel2);border-radius:4px;position:relative;cursor:pointer}
+#seek i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);border-radius:4px;width:0}
+#seek b{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--line)}
+#start{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(13,19,33,.85);z-index:5;text-align:center;padding:20px}
+#start h1{font-family:var(--display);font-size:clamp(2rem,5vw,3.4rem);margin:0;line-height:1.05}
+#start p{max-width:52ch;color:var(--muted);margin:0}
+#start button{font-size:1.2rem;padding:12px 28px}
+.sr{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <div id="chap"><span class="num">Kap. 1</span><span id="chapTitle">Das Prüfschema</span></div>
+    <div id="steps">
+      <div class="lbl"><span>Prüfschema SGB II</span><b id="stepLbl">Schritt 1 von 7</b></div>
+      <ol id="stepList"></ol>
+    </div>
+  </header>
+
+  <main id="stage" aria-live="polite">
+    <div id="view"></div>
+    <div id="quiz" hidden></div>
+    <div id="start">
+      <h1>Bürgergeld-Anspruch berechnen</h1>
+      <p>Lehrvideo in 6 Kapiteln (ca. 22 Minuten). Eine Familie, eine Tabelle, sieben Prüfschritte. Mit Sprecherstimme deines Browsers, Untertiteln und Quiz-Pausen.</p>
+      <button class="primary" id="btnStart">▶ Video starten</button>
+      <p style="font-size:.85rem">Leertaste = Pause/Weiter · ← → = Szene zurück/vor · 1–6 = Kapitel</p>
+    </div>
+  </main>
+
+  <div id="subs"><span class="who">▶</span><span class="txt" id="subTxt">Drück auf Start.</span></div>
+
+  <footer id="ctl">
+    <button id="btnPlay" aria-label="Abspielen oder pausieren">▶ Start</button>
+    <button id="btnPrev" aria-label="Szene zurück">⏮</button>
+    <button id="btnNext" aria-label="Szene vor">⏭</button>
+    <span class="chaps" id="chaps"></span>
+    <span class="grow"></span>
+    <span class="time" id="time">0:00 / 0:00</span>
+    <label><input type="checkbox" id="tts" checked> Stimme</label>
+    <select id="voice" aria-label="Stimme wählen"></select>
+    <label>Tempo <select id="rate"><option value="0.85">0,85×</option><option value="1" selected>1×</option><option value="1.15">1,15×</option><option value="1.3">1,3×</option></select></label>
+    <button id="btnFull" aria-label="Vollbild">⛶</button>
+    <div id="seek" title="Zum Zeitpunkt springen"><i></i></div>
+  </footer>
+</div>
+
+<script>
+/* ============ DATEN ============ */
+const STEPS=['§ 7 I 1','Bedarfsgemeinschaft','Ausschlüsse','Bedarfe','Einkommen','Vermögen','Anspruch'];
+const P=['frau','mann','k1','k2'];
+const PN={frau:'Frau',mann:'Mann',k1:'Kind 1 (4 J.)',k2:'Kind 2 (8 J.)'};
+const fmt=n=>(typeof n==='number')?n.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' €':n;
+const pct=n=>n.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' %';
+
+/* Rechentabelle – Werte je Person: Frau, Mann, Kind 1, Kind 2 */
+const ROWS={
+  rb:  {l:'Regelbedarf (RBS 2 / 2 / 6 / 5)',v:[506,506,357,390],c:'b'},
+  mb:  {l:'Mehrbedarf Schwangerschaft 17 %',v:[86.02,0,0,0],c:'b'},
+  kalt:{l:'KdU Kaltmiete 600 € ÷ 4',v:[150,150,150,150],c:'b'},
+  nk:  {l:'Nebenkosten 163 € ÷ 4',v:[40.75,40.75,40.75,40.75],c:'b'},
+  hz:  {l:'Heizung 193 € ÷ 4',v:[48.25,48.25,48.25,48.25],c:'b'},
+  bed: {l:'Gesamtbedarf',v:[831.02,745,596,629],c:'b sum'},
+  kg:  {l:'− Kindergeld (Kindeseinkommen)',v:[0,0,259,259],c:'e'},
+  vb:  {l:'Verbleibender Bedarf',v:[831.02,745,337,370],c:'b sum'},
+  pct: {l:'Anteil am verbleibenden Bedarf',v:['36,40 %','32,63 %','14,76 %','16,21 %'],c:'n',sum:'100,00 %'},
+  alg: {l:'− Anteil ALG I bereinigt 858,00 €',v:[312.31,279.97,126.64,139.08],c:'e'},
+  erw: {l:'− Anteil Erwerbseinkommen bereinigt 360,50 €',v:[131.22,117.63,53.21,58.44],c:'e'},
+  ans: {l:'Anspruch',v:[387.49,347.40,157.15,172.48],c:'a sum'},
+};
+
+/* Kapitel & Szenen. say = Sprechertext, view = Visualisierung, step = aktiver Prüfschritt, done = erledigte Schritte */
+const CH=[
+{t:'Das Prüfschema',scenes:[
+ {step:1,done:[],view:'title',p:{eyebrow:'Kapitel 1 · Der Anker für alles',h:'Das Prüfschema',hook:'Die Klausur liegt vor dir: vier Personen, Miete, Kindergeld, ALG I, ein kleiner Lohn. Wo fängst du an?'},
+  say:'Stell dir vor, die Klausur liegt vor dir. Ein Fall mit vier Personen, Miete, Kindergeld, Arbeitslosengeld und einem kleinen Lohn. Wo fängst du an? Genau das klären wir jetzt.'},
+ {view:'family',p:{caption:'Diese Familie begleitet uns durch das ganze Video.',badges:{frau:'schwanger, 13. SSW',mann:'555 € brutto',k1:'4 Jahre',k2:'8 Jahre'}},
+  say:'Das ist unsere Familie. Die Frau ist schwanger, 13. Woche. Der Mann arbeitet ein bisschen. Kind 1 ist vier, Kind 2 ist acht. Alle wohnen in einer Wohnung. Merk dir die vier. Wir rechnen gleich alles für sie aus.'},
+ {view:'schema',p:{reveal:1,active:1},say:'Der Kernpunkt von Kapitel 1: das Prüfschema. Sieben Schritte, immer in dieser Reihenfolge. Schritt 1: Paragraf 7 Absatz 1 Satz 1. Ist die Person überhaupt leistungsberechtigt?'},
+ {view:'schema',p:{reveal:3,active:3},step:3,say:'Schritt 2: Bedarfsgemeinschaft bilden. Wer gehört zusammen? Schritt 3: Leistungsausschlüsse. Fliegt jemand raus, obwohl er eigentlich reinpasst?'},
+ {view:'schema',p:{reveal:5,active:5},step:5,say:'Schritt 4: Bedarfe berechnen. Wie viel braucht jede Person? Schritt 5: Einkommen anrechnen. Was ist schon da?'},
+ {view:'schema',p:{reveal:7,active:7},step:7,say:'Schritt 6: Vermögen. Und Schritt 7: der Anspruch. Erst hier steht fest, ob die Familie hilfebedürftig ist und wie viel Geld sie bekommt.'},
+ {view:'schema',p:{reveal:7,active:7,merk:'Hilfebedürftigkeit immer <b>ZULETZT</b>.'},say:'Merksatz: Hilfebedürftigkeit immer ZULETZT. Ob jemand wirklich Geld braucht, weißt du erst, wenn Bedarf und Einkommen auf dem Tisch liegen. Wer das am Anfang prüft, verrechnet sich garantiert.'},
+ {view:'schema',p:{reveal:7,active:7,merk:'Warum die Reihenfolge? Jeder Schritt liefert die <b>Zutaten</b> für den nächsten.'},say:'Warum ist die Reihenfolge so wichtig? Weil jeder Schritt die Zutaten für den nächsten liefert. Ohne Bedarfsgemeinschaft weißt du nicht, wessen Einkommen zählt. Ohne Bedarfe kannst du kein Einkommen verteilen. Und ohne beides gibt es keinen Anspruch. Schritt überspringen heißt: Punkte weg.'},
+ {step:1,view:'table',p:{rows:[],note:'Goldene Regel: Tabelle anlegen, Person für Person prüfen.'},say:'Goldene Regel: Leg eine Tabelle an. Eine Spalte pro Person. Dann prüfst du Person für Person, Schritt für Schritt. Diese Tabelle wächst im Video mit. Am Ende steht unten der Anspruch für jede Person.'},
+ {view:'legend',say:'Noch die Farben, damit du dich sofort zurechtfindest. Bedarf ist blau. Einkommen ist rot. Freibeträge sind grün. Der Anspruch ist gold.'},
+ {quiz:{q:'Was prüfst du im Schema ganz ZULETZT?',opts:['Ob die Person erwerbsfähig ist','Ob die Person hilfebedürftig ist','Wer zur Bedarfsgemeinschaft gehört'],a:1,
+   e:'Richtig ist B. Hilfebedürftigkeit ergibt sich erst aus Bedarf minus Einkommen und Vermögen. Deshalb steht sie ganz am Ende, in Schritt 7.'},
+  say:'Mini-Quiz. Drück auf Pause und überleg kurz: Was prüfst du im Schema ganz zuletzt?'},
+ {view:'summary',p:['Sieben Schritte, immer in dieser Reihenfolge.','Hilfebedürftigkeit prüfst du ganz zuletzt.','Tabelle anlegen und Person für Person durchgehen.'],
+  say:'Zusammenfassung in drei Sätzen. Erstens: Sieben Schritte, immer in dieser Reihenfolge. Zweitens: Hilfebedürftigkeit prüfst du ganz zuletzt. Drittens: Tabelle anlegen und Person für Person durchgehen.'},
+]},
+
+{t:'Wer darf rein? (§ 7 I 1)',scenes:[
+ {step:1,done:[],view:'title',p:{eyebrow:'Kapitel 2 · Schritt 1 und Schritt 3',h:'Wer darf rein?',hook:'Wer darf überhaupt Bürgergeld bekommen? Und wer fliegt raus, obwohl er eigentlich reingehört?'},
+  say:'Wer darf überhaupt Bürgergeld bekommen? Und wer fliegt raus, obwohl er eigentlich reingehört? Das ist Schritt 1 und Schritt 3 im Schema.'},
+ {view:'criteria',p:{reveal:1},say:'Kernpunkt: Paragraf 7 Absatz 1 Satz 1. Drei Voraussetzungen, und alle müssen passen. Erstens das Alter: mindestens 15 Jahre und noch nicht in der Regelaltersrente.'},
+ {view:'criteria',p:{reveal:2},say:'Zweitens erwerbsfähig. Das heißt: Die Person könnte mindestens drei Stunden am Tag arbeiten. Krankheit oder Schwangerschaft allein machen nicht erwerbsunfähig.'},
+ {view:'criteria',p:{reveal:3},say:'Drittens der gewöhnliche Aufenthalt in Deutschland. Die vierte Voraussetzung, Hilfebedürftigkeit, steht auch im Paragrafen. Aber die hebst du dir für den Schluss auf.'},
+ {view:'criteria',p:{reveal:3},say:'In der Klausur schreibst du das als kurze Prüfung hin: Alter erfüllt, erwerbsfähig, gewöhnlicher Aufenthalt. Drei Häkchen, ein Satz pro Häkchen. Das dauert dreißig Sekunden und bringt sichere Punkte.'},
+ {view:'criteria',p:{reveal:3,persons:{frau:['ok','ok','ok'],mann:['ok','ok','ok']}},say:'Jetzt unsere Familie. Die Frau: erwachsen, erwerbsfähig trotz Schwangerschaft, wohnt in Deutschland. Alles grün. Der Mann genauso. Beide sind erwerbsfähige Leistungsberechtigte, kurz eLb.'},
+ {view:'criteria',p:{reveal:3,persons:{frau:['ok','ok','ok'],mann:['ok','ok','ok'],k1:['no','na','ok'],k2:['no','na','ok']}},
+  say:'Die Kinder sind vier und acht. Unter 15, also nicht erwerbsfähig im Sinne des Gesetzes. Keine Panik: Die Kinder kommen in Kapitel 3 über die Bedarfsgemeinschaft rein. Sie bekommen Bürgergeld als nicht erwerbsfähige Leistungsberechtigte.'},
+ {step:3,done:[1],view:'list',p:{title:'Schritt 3: Leistungsausschlüsse',reveal:5,items:[
+   {ic:'✗',t:'Altersrente',s:'Wer Altersrente bezieht, ist raus (§ 7 IV).'},
+   {ic:'✗',t:'Haft',s:'Wer in einer Justizvollzugsanstalt sitzt, ist raus.'},
+   {ic:'✗',t:'Stationäre Einrichtung',s:'Z. B. Krankenhaus länger als 6 Monate.'},
+   {ic:'✗',t:'BAföG-fähiges Studium außerhalb des Elternhauses',s:'Ausbildung wird über BAföG gefördert, nicht über das Jobcenter (§ 7 V).'},
+   {ic:'✗',t:'Asylbewerber',s:'Leistungen nach dem Asylbewerberleistungsgesetz (§ 7 I 2).'}],cls:'x'},
+  say:'Schritt 3 im Schema: Leistungsausschlüsse. Fünf Klassiker. Altersrente. Haft. Stationäre Einrichtung, zum Beispiel Krankenhaus länger als sechs Monate. BAföG-fähiges Studium außerhalb des Elternhauses. Und Asylbewerber, die bekommen Leistungen nach dem Asylbewerberleistungsgesetz.'},
+ {view:'merk',p:{cls:'',html:'BG-Zugehörigkeit und Ausschluss sind <b>ZWEI getrennte Prüfpunkte</b>.',sub:'Erst: Gehört die Person zur Bedarfsgemeinschaft? Dann: Ist sie ausgeschlossen? Eine ausgeschlossene Person zählt bei der Miete trotzdem als Kopf.'},
+  say:'Wichtig für die Klausur: BG-Zugehörigkeit und Ausschluss sind ZWEI getrennte Prüfpunkte. Erst fragst du: Gehört die Person zur Bedarfsgemeinschaft? Dann fragst du: Ist sie ausgeschlossen? Eine ausgeschlossene Person zählt bei der Miete trotzdem als Kopf. Dazu mehr in Kapitel 4.'},
+ {view:'family',p:{caption:'Kein Ausschluss bei unserer Familie. Alle vier bleiben im Spiel.',marks:{frau:'ok',mann:'ok',k1:'ok',k2:'ok'},badges:{frau:'eLb',mann:'eLb',k1:'nicht erwerbsfähig',k2:'nicht erwerbsfähig'}},
+  say:'Bei unserer Familie greift kein Ausschluss. Keine Rente, keine Haft, kein Studium, kein Asylverfahren. Alle vier bleiben im Spiel.'},
+ {quiz:{q:'Die Tochter (20) studiert mit BAföG, wohnt aber noch bei den Eltern. Ist sie vom Bürgergeld ausgeschlossen?',opts:['Ja, Studenten sind immer ausgeschlossen','Nein, der Ausschluss gilt nur außerhalb des Elternhauses','Nein, weil sie unter 25 ist'],a:1,
+   e:'Richtig ist B. Der Ausschluss nach § 7 V trifft nur, wer außerhalb des Elternhauses wohnt. Sie gehört über Nr. 4 zur BG der Eltern. Das BAföG wird dann als ihr Einkommen angerechnet.'},
+  say:'Mini-Quiz, Pause drücken. Die Tochter ist 20, studiert mit BAföG, wohnt aber noch bei den Eltern. Ist sie vom Bürgergeld ausgeschlossen?'},
+ {view:'summary',p:['§ 7 I 1: Alter 15 bis Rente, erwerbsfähig ab 3 Stunden am Tag, Aufenthalt in Deutschland.','Ausschlüsse: Altersrente, Haft, stationäre Einrichtung, Studium außerhalb des Elternhauses, Asylbewerber.','BG-Zugehörigkeit und Ausschluss sind zwei getrennte Prüfpunkte.'],
+  say:'Drei Sätze zum Merken. Erstens: Paragraf 7 Absatz 1 Satz 1 heißt Alter, Erwerbsfähigkeit, Aufenthalt. Zweitens: Die fünf Ausschlüsse sind Rente, Haft, Einrichtung, Studium außerhalb des Elternhauses, Asyl. Drittens: Zugehörigkeit und Ausschluss sind zwei getrennte Prüfpunkte.'},
+]},
+
+{t:'Bedarfsgemeinschaft bilden (§ 7 III)',scenes:[
+ {step:2,done:[1,3],view:'title',p:{eyebrow:'Kapitel 3 · Schritt 2',h:'Wer gehört zusammen?',hook:'Vier Leute in einer Wohnung. Sind das automatisch eine Bedarfsgemeinschaft? Und was ist mit der Oma auf dem Sofa?'},
+  say:'Vier Leute in einer Wohnung. Sind das automatisch eine Bedarfsgemeinschaft? Und was ist mit der Oma auf dem Sofa? Das ist Schritt 2 im Schema.'},
+ {view:'bg',p:{reveal:0},say:'Kernpunkt: Der Startpunkt ist immer ein erwerbsfähiger Leistungsberechtigter, der eLb. Das ist Nummer 1 in Paragraf 7 Absatz 3. Ohne eLb gibt es keine Bedarfsgemeinschaft.'},
+ {view:'bg',p:{reveal:1,hl:'n2'},say:'Von diesem eLb aus hängst du die anderen an. Nummer 2: die Eltern, wenn der eLb selbst ein unverheiratetes Kind unter 25 ist, das bei ihnen wohnt.'},
+ {view:'bg',p:{reveal:3,hl:'n3'},say:'Nummer 3: der Partner. 3a ist der Ehegatte, 3b der eingetragene Lebenspartner, 3c der Partner in einer Verantwortungs- und Einstehensgemeinschaft, kurz VEG. Also ein Paar ohne Trauschein, das füreinander einsteht.'},
+ {view:'bg',p:{reveal:4,hl:'n4'},say:'Nummer 4: die unverheirateten Kinder unter 25 im Haushalt, wenn sie ihren Lebensunterhalt nicht aus eigenem Einkommen oder Vermögen decken können.'},
+ {view:'cards',p:{title:'Die 4 VEG-Vermutungen (§ 7 IIIa)',reveal:4,cards:[
+   {tag:'Nr. 1',head:'Länger als ein Jahr zusammen',txt:'Die beiden leben seit über einem Jahr in einem Haushalt.'},
+   {tag:'Nr. 2',head:'Gemeinsames Kind',txt:'Sie leben mit einem gemeinsamen Kind zusammen.'},
+   {tag:'Nr. 3',head:'Kinder oder Angehörige versorgen',txt:'Sie versorgen Kinder oder Angehörige im Haushalt gemeinsam.'},
+   {tag:'Nr. 4',head:'Zugriff aufs Konto',txt:'Einer darf über Einkommen oder Vermögen des anderen verfügen.'}],
+   merk:'Trifft eine Vermutung zu: <b>Beweislastumkehr</b>. Die beiden müssen beweisen, dass sie KEIN Paar sind.'},
+  say:'Wann ist ein Paar ohne Trauschein eine VEG? Das Gesetz vermutet es in vier Fällen. Länger als ein Jahr zusammen. Ein gemeinsames Kind. Gemeinsame Versorgung von Kindern oder Angehörigen. Oder Zugriff auf das Konto des anderen. Trifft eine Vermutung zu, dreht sich die Beweislast: Die beiden müssen beweisen, dass sie kein Paar sind.'},
+ {view:'cards',p:{title:'Zwei Klausur-Fallen',reveal:2,cards:[
+   {tag:'Falle 1',head:'Oma, Tante, Geschwister über 25',txt:'Nie Bedarfsgemeinschaft. Das ist höchstens eine Haushaltsgemeinschaft. Aber: Bei der Miete zählen sie als Kopf.',cls:'warn'},
+   {tag:'Falle 2',head:'Junge Mutter unter 25 bei ihren Eltern',txt:'Sie bildet mit ihrem eigenen Kind eine EIGENE Bedarfsgemeinschaft. Sie ist der eLb, ihr Kind hängt über Nr. 4 an ihr. Die Eltern bilden eine zweite BG.',cls:'warn'}]},
+  say:'Zwei Fallen. Erstens: Oma, Tante oder Geschwister über 25 gehören NIE zur Bedarfsgemeinschaft. Das ist höchstens eine Haushaltsgemeinschaft. Zweitens: Eine junge Mutter unter 25, die bei ihren Eltern wohnt, bildet mit ihrem eigenen Kind eine eigene BG. Sie ist der eLb, ihr Kind hängt an ihr. Die Großeltern sind eine zweite BG.'},
+ {view:'family',p:{caption:'Unsere BG: Mann als eLb (Nr. 1), Frau als Ehegattin (Nr. 3a), beide Kinder über Nr. 4. Vier Personen, eine Bedarfsgemeinschaft.',badges:{frau:'Nr. 3a Ehegattin',mann:'Nr. 1 eLb',k1:'Nr. 4 Kind U25',k2:'Nr. 4 Kind U25'},marks:{frau:'ok',mann:'ok',k1:'ok',k2:'ok'},bg:true},
+  say:'Unsere Familie: Wir starten beim Mann als eLb, Nummer 1. Die Frau ist seine Ehefrau, Nummer 3a. Die beiden Kinder sind unter 25 und unverheiratet, Nummer 4. Ergebnis: eine Bedarfsgemeinschaft mit vier Personen. Übrigens: Du könntest genauso gut bei der Frau starten, sie ist auch eLb.'},
+ {quiz:{q:'Die Oma (70, kleine Rente) wohnt mit in der Wohnung. Gehört sie zur Bedarfsgemeinschaft?',opts:['Ja, sie wohnt ja im selben Haushalt','Nein, nie. Aber bei der Miete zählt sie als Kopf','Nur, wenn sie kein eigenes Einkommen hat'],a:1,
+   e:'Richtig ist B. Großeltern gehören nie zur BG, das ist eine Haushaltsgemeinschaft. Für die Kosten der Unterkunft zählt sie trotzdem als Kopf: Die Miete wird dann durch fünf geteilt.'},
+  say:'Mini-Quiz, Pause drücken. Die Oma, 70 Jahre, kleine Rente, wohnt mit in der Wohnung. Gehört sie zur Bedarfsgemeinschaft?'},
+ {view:'summary',p:['Startpunkt ist immer ein eLb (Nr. 1), dann Nr. 2, 3 und 4 anhängen.','Vier VEG-Vermutungen: über ein Jahr, gemeinsames Kind, Versorgung, Kontozugriff.','Oma, Tante, Geschwister über 25 sind nie BG. Junge Mutter U25 bildet eine eigene BG.'],
+  say:'Drei Sätze. Erstens: Startpunkt ist immer ein eLb, dann hängst du Nummer 2, 3 und 4 an. Zweitens: Die vier VEG-Vermutungen sind über ein Jahr, gemeinsames Kind, Versorgung, Kontozugriff. Drittens: Oma, Tante und Geschwister über 25 sind nie BG, und die junge Mutter unter 25 bildet eine eigene BG.'},
+]},
+
+{t:'Bedarfe berechnen',scenes:[
+ {step:4,done:[1,2,3],view:'title',p:{eyebrow:'Kapitel 4 · Schritt 4',h:'Was braucht die Familie?',hook:'Wie viel Geld braucht unsere Familie eigentlich, auf Euro und Cent?'},
+  say:'Wie viel Geld braucht unsere Familie eigentlich, auf Euro und Cent? Das ist Schritt 4: die Bedarfe. Ab jetzt wird alles blau.'},
+ {view:'merk',p:{cls:'blue',html:'Bedarf = <b>Regelbedarf</b> + <b>Mehrbedarf</b> + <b>Kosten der Unterkunft</b>',sub:'Drei Bausteine pro Person. Alle blau.'},
+  say:'Kernpunkt: Der Bedarf hat drei Bausteine. Regelbedarf plus Mehrbedarf plus Kosten der Unterkunft, kurz KdU. Das rechnen wir für jede Person einzeln.'},
+ {view:'rbs',p:{reveal:6,hl:[]},say:'Baustein eins: der Regelbedarf. Sechs Stufen. Stufe 1, 563 Euro: Alleinstehende und Alleinerziehende. Stufe 2, 506 Euro: jeder Partner eines Paares. Stufe 3, 451 Euro: Erwachsene unter 25 im Haushalt der Eltern. Stufe 4, 471 Euro: Jugendliche von 14 bis 17. Stufe 5, 390 Euro: Kinder von 6 bis 13. Stufe 6, 357 Euro: Kinder bis 5.'},
+ {view:'rbs',p:{reveal:6,hl:[2,5,6],who:{2:['frau','mann'],5:['k2'],6:['k1']}},say:'Unsere Familie: Frau und Mann sind ein Paar, also jeweils Stufe 2, 506 Euro. Kind 1 ist vier, Stufe 6, 357 Euro. Kind 2 ist acht, Stufe 5, 390 Euro.'},
+ {view:'table',p:{rows:['rb'],hl:'rb',notes:[{c:'b',t:'Frau 506 €'},{c:'b',t:'Mann 506 €'},{c:'b',t:'Kind 1: 357 €'},{c:'b',t:'Kind 2: 390 €'}]},say:'Erste Zeile in der Tabelle: Regelbedarf. 506, 506, 357, 390.'},
+ {view:'cards',p:{title:'Baustein 2: Mehrbedarfe',reveal:3,cards:[
+   {tag:'Schwangerschaft',head:'17 % des eigenen Regelbedarfs',txt:'Ab der 13. Schwangerschaftswoche. Bei RBS 2: 506 € × 17 % = 86,02 €.',cls:'hl'},
+   {tag:'Alleinerziehend',head:'36 % oder 12 % je Kind',txt:'36 % bei einem Kind unter 7 oder bei zwei bis drei Kindern unter 16. Sonst 12 % je minderjährigem Kind, höchstens 60 %. Immer nur beim Elternteil, nie beim Kind.'},
+   {tag:'Warmwasser',head:'Nur bei dezentraler Erzeugung',txt:'Also nur bei Durchlauferhitzer oder Boiler. Läuft Warmwasser über die Heizung, gibt es keinen Mehrbedarf.'}]},
+  say:'Baustein zwei: Mehrbedarfe. Schwangerschaft: 17 Prozent des eigenen Regelbedarfs, ab der 13. Woche. Bei Stufe 2 sind das 86 Euro 02. Alleinerziehend: 36 Prozent bei einem Kind unter 7 oder bei zwei bis drei Kindern unter 16, sonst 12 Prozent je Kind, höchstens 60 Prozent. Und das immer beim Elternteil, nie beim Kind. Warmwasser gibt es nur bei dezentraler Erzeugung, also Durchlauferhitzer.'},
+ {view:'table',p:{rows:['rb','mb'],hl:'mb',notes:[{c:'b',t:'506 € × 17 % = 86,02 €'}]},say:'Bei uns ist nur die Frau betroffen: 506 mal 17 Prozent gleich 86 Euro 02. Der Mann ist nicht alleinerziehend, Warmwasser läuft über die Heizung. Also nur eine Zahl in der Zeile.'},
+ {view:'cards',p:{title:'Baustein 3: Kosten der Unterkunft (KdU)',reveal:3,cards:[
+   {tag:'Regel',head:'Nach Köpfen auf ALLE Bewohner',txt:'Auch auf Ausgeschlossene, auch auf die Oma. Jeder Kopf zählt gleich, egal wie alt.',cls:'hl'},
+   {tag:'Getrennt',head:'Kalt / Nebenkosten / Heizung',txt:'Drei eigene Zeilen. Nie als eine Summe verteilen.'},
+   {tag:'Runden',head:'2 Nachkommastellen',txt:'Pro Person und Zeile kaufmännisch runden.'}]},
+  say:'Baustein drei: Kosten der Unterkunft. Regel: Die Miete wird nach Köpfen auf ALLE Bewohner verteilt. Auch auf Ausgeschlossene, auch auf die Oma. Und zwar getrennt: Kaltmiete, Nebenkosten, Heizung, drei Zeilen. Pro Zeile auf zwei Nachkommastellen runden.'},
+ {view:'table',p:{rows:['rb','mb','kalt'],hl:'kalt',notes:[{c:'b',t:'600 € ÷ 4 = 150,00 €'}]},say:'Unsere Wohnung hat vier Köpfe. Kaltmiete 600 Euro geteilt durch vier: 150 Euro pro Person.'},
+ {view:'table',p:{rows:['rb','mb','kalt','nk'],hl:'nk',notes:[{c:'b',t:'163 € ÷ 4 = 40,75 €'}]},say:'Nebenkosten 163 Euro durch vier: 40 Euro 75.'},
+ {view:'table',p:{rows:['rb','mb','kalt','nk','hz'],hl:'hz',notes:[{c:'b',t:'193 € ÷ 4 = 48,25 €'}]},say:'Heizung 193 Euro durch vier: 48 Euro 25. Jede Person bekommt also 239 Euro Unterkunftskosten.'},
+ {view:'table',p:{rows:['rb','mb','kalt','nk','hz','bed'],hl:'bed',notes:[{c:'b',t:'Frau 831,02 €'},{c:'b',t:'Mann 745,00 €'},{c:'b',t:'Kind 1 596,00 €'},{c:'b',t:'Kind 2 629,00 €'},{c:'b',t:'Summe 2.801,02 €'}]},
+  say:'Alles addiert: Gesamtbedarf. Frau 831 Euro 02. Mann 745. Kind 1 596. Kind 2 629. Zusammen 2.801 Euro 02. Das ist das, was die Familie braucht.'},
+ {view:'bars',p:{stage:'bedarf'},say:'Als Balken sieht das so aus. Blau ist der Bedarf. Die Frau hat den höchsten Balken wegen des Mehrbedarfs. Merk dir das Bild, gleich kommt Rot dazu.'},
+ {quiz:{q:'Nebenkosten 163 €, vier Bewohner. Wie viel davon steht bei Kind 1 (4 Jahre) in der Tabelle?',opts:['0 €, Kinder zahlen keine Miete','40,75 €, ein Kopfteil','81,50 €, Kinder zählen halb'],a:1,
+   e:'Richtig ist B. KdU werden nach Köpfen verteilt, jeder Kopf zählt gleich: 163 € ÷ 4 = 40,75 €. Das Alter spielt keine Rolle.'},
+  say:'Mini-Quiz, Pause drücken. Nebenkosten 163 Euro, vier Bewohner. Wie viel davon steht bei Kind 1 in der Tabelle?'},
+ {view:'summary',p:['Bedarf = Regelbedarf + Mehrbedarf + KdU, pro Person in eine eigene Spalte.','Mehrbedarf Schwangerschaft 17 % ab 13. SSW, Alleinerziehend nur beim Elternteil.','KdU nach Köpfen auf alle Bewohner, getrennt nach Kalt, Nebenkosten und Heizung.'],
+  say:'Drei Sätze. Erstens: Bedarf ist Regelbedarf plus Mehrbedarf plus KdU, pro Person eine Spalte. Zweitens: Schwangerschaft 17 Prozent ab der 13. Woche, Alleinerziehend nur beim Elternteil. Drittens: KdU nach Köpfen auf alle Bewohner, getrennt nach Kalt, Nebenkosten und Heizung.'},
+]},
+
+{t:'Einkommen anrechnen',scenes:[
+ {step:5,done:[1,2,3,4],view:'title',p:{eyebrow:'Kapitel 5 · Schritt 5 bis 7 · Das Herzstück',h:'Was ist schon da?',hook:'Die Familie hat 1.443 € Einkommen plus Kindergeld. Wie viel davon zählt, und bei wem?'},
+  say:'Die Familie hat 1.443 Euro Einkommen plus Kindergeld. Wie viel davon zählt, und bei wem? Das ist Schritt 5, das Herzstück. Wir gehen langsam.'},
+ {view:'list',p:{title:'Drei Schritte, immer in dieser Reihenfolge',reveal:3,cls:'gold',items:[
+   {ic:'1',t:'Kindeseinkommen zuerst beim Kind abziehen',s:'Kindergeld, Unterhaltsvorschuss. Ergebnis: „verbleibende Bedarfe“.'},
+   {ic:'2',t:'Einkommen der Eltern bereinigen',s:'ALG I minus Versicherungspauschale. Erwerbseinkommen minus Freibetrag.'},
+   {ic:'3',t:'Bedarfsanteilsmethode',s:'Bereinigtes Einkommen nach Prozentanteilen auf alle verteilen.'}]},
+  say:'Kernpunkt: drei Schritte, immer in dieser Reihenfolge. Erstens: Kindeseinkommen zuerst beim Kind abziehen. Zweitens: Einkommen der Eltern bereinigen. Drittens: Bedarfsanteilsmethode, also das bereinigte Einkommen nach Prozenten verteilen.'},
+ {view:'table',p:{rows:['bed','kg'],hl:'kg',notes:[{c:'e',t:'Kind 1: 596 − 259'},{c:'e',t:'Kind 2: 629 − 259'}]},
+  say:'Schritt 1. Kindergeld ist Einkommen des Kindes, 259 Euro pro Kind. Das ziehst du zuerst beim Kind ab. Bleibt etwas übrig, wandert der Rest zu den Eltern. Hier bleibt nichts übrig.'},
+ {view:'table',p:{rows:['bed','kg','vb'],hl:'vb',notes:[{c:'b',t:'Kind 1: 337,00 €'},{c:'b',t:'Kind 2: 370,00 €'},{c:'b',t:'Summe 2.283,02 €'}]},
+  say:'Ergebnis: die verbleibenden Bedarfe. Frau 831 Euro 02, Mann 745, Kind 1 337, Kind 2 370. Zusammen 2.283 Euro 02. Mit dieser Summe rechnen wir weiter.'},
+ {view:'bars',p:{stage:'kg'},say:'Im Balkenbild: Bei den Kindern frisst das Kindergeld schon einen Teil des blauen Bedarfs. Das rote Stück ist angerechnetes Einkommen.'},
+ {view:'fb',p:{stage:'alg'},say:'Schritt 2, erst die Frau. Sie bekommt Arbeitslosengeld I, 888 Euro. Das ist sonstiges Einkommen. Davon geht nur die Versicherungspauschale ab: 30 Euro. Bleiben 858 Euro bereinigt.'},
+ {quiz:{q:'Der Mann verdient 555 € brutto, netto ebenfalls 555 €. Wie hoch ist sein Freibetrag?',opts:['100 €','194,50 €','191,00 €'],a:1,
+   e:'Richtig ist B. 100 € Grundfreibetrag + 20 % von 420 € (100 bis 520 €) = 84 € + 30 % von 35 € (520 bis 555 €) = 10,50 €. Zusammen 194,50 €. Wer 191 € hat, hat die 30-Prozent-Stufe vergessen.'},
+  say:'Mini-Quiz, Pause drücken, Taschenrechner raus. Der Mann verdient 555 Euro brutto, netto ebenfalls 555. Wie hoch ist sein Freibetrag?'},
+ {view:'fb',p:{stage:1},say:'Jetzt der Mann. Erwerbseinkommen wird mit dem Freibetrag bereinigt. Der Freibetrag wird aus dem Brutto gerechnet. Hier: 555 Euro brutto.'},
+ {view:'fb',p:{stage:2},say:'Stufe eins: Die ersten 100 Euro sind komplett frei. Grundfreibetrag.'},
+ {view:'fb',p:{stage:3},say:'Stufe zwei: Von 100 bis 520 Euro bleiben 20 Prozent frei. 420 mal 20 Prozent gleich 84 Euro.'},
+ {view:'fb',p:{stage:4},say:'Stufe drei: Von 520 bis 1.000 Euro bleiben 30 Prozent frei. Bei uns nur 35 Euro in dieser Stufe. 35 mal 30 Prozent gleich 10 Euro 50. Die vierte Stufe, 10 Prozent bis 1.200 oder mit Kind 1.500 Euro, erreicht er nicht.'},
+ {view:'fb',p:{stage:5},say:'Freibetrag gesamt: 100 plus 84 plus 10,50 gleich 194 Euro 50. Und jetzt der Merksatz: Freibetrag aus dem BRUTTO rechnen, vom NETTO abziehen. Netto 555 minus 194,50 gleich 360 Euro 50 bereinigt.'},
+ {view:'table',p:{rows:['vb','pct'],hl:'pct',notes:[{c:'b',t:'Frau 831,02 ÷ 2.283,02 = 36,40 %'},{c:'b',t:'Mann 745 ÷ 2.283,02 = 32,63 %'},{c:'b',t:'Kind 1 337 ÷ 2.283,02 = 14,76 %'},{c:'b',t:'Kind 2 370 ÷ 2.283,02 = 16,21 %'}]},
+  say:'Schritt 3: die Bedarfsanteilsmethode. Jede Person bekommt ihren Prozentanteil an den verbleibenden Bedarfen. Frau: 831,02 durch 2.283,02 gleich 36,40 Prozent. Mann 32,63. Kind 1 14,76. Kind 2 16,21. Zusammen 100.'},
+ {view:'table',p:{rows:['vb','pct','alg'],hl:'alg',notes:[{c:'e',t:'858 × 36,40 % = 312,31'},{c:'e',t:'858 × 32,63 % = 279,97'},{c:'e',t:'858 × 14,76 % = 126,64'},{c:'e',t:'858 × 16,21 % = 139,08'}]},
+  say:'Zwei Verdiener, also zwei Einkommen getrennt verteilen. Erst das ALG I der Frau, 858 Euro. Frau 36,40 Prozent davon: 312 Euro 31. Mann 279,97. Kind 1 126,64. Kind 2 139,08.'},
+ {view:'table',p:{rows:['vb','pct','alg','erw'],hl:'erw',notes:[{c:'e',t:'360,50 × 36,40 % = 131,22'},{c:'e',t:'360,50 × 32,63 % = 117,63'},{c:'e',t:'360,50 × 14,76 % = 53,21'},{c:'e',t:'360,50 × 16,21 % = 58,44'}]},
+  say:'Dann das Erwerbseinkommen des Mannes, 360 Euro 50. Frau 131,22. Mann 117,63. Kind 1 53,21. Kind 2 58,44. Gleiche Prozente, anderes Einkommen.'},
+ {step:6,done:[1,2,3,4,5],view:'merk',p:{cls:'green',html:'Schritt 6, Vermögen: <b>nichts angegeben, nichts anzurechnen.</b> Abgehakt.',sub:'In der Klausur: einen Satz dazu schreiben. Auch wenn es nichts gibt.'},
+  say:'Kurz Schritt 6: Vermögen. Im Fall steht nichts dazu. Also kein anrechenbares Vermögen. In der Klausur trotzdem einen Satz hinschreiben. Abgehakt.'},
+ {step:7,done:[1,2,3,4,5,6],view:'table',p:{rows:['vb','pct','alg','erw','ans'],hl:'ans',notes:[{c:'a',t:'Frau 387,49 €'},{c:'a',t:'Mann 347,40 €'},{c:'a',t:'Kind 1 157,15 €'},{c:'a',t:'Kind 2 172,48 €'},{c:'a',t:'Summe 1.064,52 €'}]},
+  say:'Schritt 7: der Anspruch. Verbleibender Bedarf minus beide Einkommensanteile. Frau: 831,02 minus 312,31 minus 131,22 gleich 387 Euro 49. Mann 347,40. Kind 1 157,15. Kind 2 172,48. Zusammen 1.064 Euro 52. Jetzt, und erst jetzt, steht fest: Die Familie ist hilfebedürftig.'},
+ {view:'bars',p:{stage:'ans'},say:'Das Bild zum Schluss: Blau ist der Bedarf, rot das angerechnete Einkommen, gold das, was das Jobcenter zahlt. Bei jeder Person bleibt ein goldenes Stück.'},
+ {view:'summary',p:['Kindeseinkommen zuerst beim Kind abziehen, dann mit den verbleibenden Bedarfen weiterrechnen.','Freibetrag aus dem Brutto rechnen, vom Netto abziehen. ALG I nur minus 30 € Pauschale.','Bedarfsanteilsmethode: Prozentanteile bilden, jedes Einkommen getrennt verteilen, Anspruch = Rest.'],
+  say:'Drei Sätze. Erstens: Kindeseinkommen zuerst beim Kind abziehen, dann mit den verbleibenden Bedarfen weiterrechnen. Zweitens: Freibetrag aus dem Brutto rechnen, vom Netto abziehen, ALG I nur minus 30 Euro. Drittens: Prozentanteile bilden, jedes Einkommen getrennt verteilen, der Rest ist der Anspruch.'},
+]},
+
+{t:'Klausur-Checkliste',scenes:[
+ {step:7,done:[1,2,3,4,5,6],view:'title',p:{eyebrow:'Kapitel 6 · Abschluss',h:'Klausur-Checkliste',hook:'Welche fünf Fehler kosten in der Klausur die meisten Punkte? Und wie vermeidest du sie in zehn Sekunden?'},
+  say:'Welche fünf Fehler kosten in der Klausur die meisten Punkte? Und wie vermeidest du sie in zehn Sekunden? Letztes Kapitel.'},
+ {view:'list',p:{title:'Die 5 häufigsten Fehler',reveal:1,cls:'x',items:[
+   {ic:'1',t:'Hilfebedürftigkeit zu früh geprüft',s:'Richtig: ganz zuletzt, nach Bedarf, Einkommen und Vermögen.'},
+   {ic:'2',t:'KdU nicht auf alle Bewohner verteilt',s:'Richtig: nach Köpfen auf alle, auch Oma und Ausgeschlossene. Kalt, NK, Heizung getrennt.'},
+   {ic:'3',t:'Freibetrag vom Brutto abgezogen',s:'Richtig: Freibetrag aus dem Brutto RECHNEN, vom Netto ABZIEHEN.'},
+   {ic:'4',t:'Kindergeld nicht zuerst beim Kind',s:'Richtig: Kindergeld ist Kindeseinkommen. Erst beim Kind, nur der Rest zu den Eltern.'},
+   {ic:'5',t:'Alleinerziehenden-Mehrbedarf beim Kind',s:'Richtig: Der Mehrbedarf steht beim Elternteil, nie beim Kind.'}]},
+  say:'Fehler eins: Hilfebedürftigkeit zu früh geprüft. Sie kommt ganz zuletzt.'},
+ {view:'list',p:{title:'Die 5 häufigsten Fehler',reveal:2,cls:'x',keep:true},say:'Fehler zwei: Die Miete nicht auf alle Bewohner verteilt. Jeder Kopf zählt, auch Oma, auch Ausgeschlossene. Und immer getrennt nach Kalt, Nebenkosten, Heizung.'},
+ {view:'list',p:{title:'Die 5 häufigsten Fehler',reveal:3,cls:'x',keep:true},say:'Fehler drei: Freibetrag vom Brutto abgezogen. Nein. Aus dem Brutto rechnen, vom Netto abziehen.'},
+ {view:'list',p:{title:'Die 5 häufigsten Fehler',reveal:4,cls:'x',keep:true},say:'Fehler vier: Kindergeld nicht zuerst beim Kind. Kindergeld ist Einkommen des Kindes. Erst beim Kind, nur ein Rest wandert zu den Eltern.'},
+ {view:'list',p:{title:'Die 5 häufigsten Fehler',reveal:5,cls:'x',keep:true},say:'Fehler fünf: Alleinerziehenden-Mehrbedarf beim Kind eingetragen. Der gehört zum Elternteil, nie zum Kind.'},
+ {view:'list',p:{title:'10-Sekunden-Check vor der Abgabe',reveal:5,cls:'ok',items:[
+   {ic:'✓',t:'Steht in jeder Spalte eine Person?',s:'Auch die, die ausgeschlossen ist oder nicht zur BG gehört (für die KdU).'},
+   {ic:'✓',t:'Ist jede Miete-Zeile durch alle Köpfe geteilt?',s:'Kalt, Nebenkosten, Heizung: drei Zeilen, gleiche Kopfzahl.'},
+   {ic:'✓',t:'Steht das Kindergeld beim Kind?',s:'Und das Einkommen der Eltern erst nach dem Bereinigen in der Tabelle.'},
+   {ic:'✓',t:'Ergeben die Prozente 100?',s:'Wenn nicht: Rundungsfehler suchen.'},
+   {ic:'✓',t:'Ist der Anspruch gold und positiv?',s:'Negativ heißt: nicht hilfebedürftig. Dann kein Anspruch, aber trotzdem Vermögen prüfen und hinschreiben.'}]},
+  say:'Dein 10-Sekunden-Check vor der Abgabe. Steht in jeder Spalte eine Person? Ist jede Miete-Zeile durch alle Köpfe geteilt? Steht das Kindergeld beim Kind? Ergeben die Prozente 100? Und ist der Anspruch bei jeder Person positiv? Fünf Fragen, fünf Häkchen.'},
+ {view:'cmp',p:{},say:'Bonus in 60 Sekunden: Bescheid ändern. Zwei Paragrafen aus dem SGB X. Paragraf 48: Das Leben hat sich geändert. Neues Einkommen, Umzug, Kind geboren. Der Bescheid war richtig, aber die Verhältnisse sind anders. Paragraf 45: Der Fehler war schon drin. Der Bescheid war von Anfang an rechtswidrig. Dann prüfst du Vertrauensschutz: Durfte die Person auf den Bescheid vertrauen? Merksatz: 48 Leben geändert, 45 Fehler war drin.'},
+ {quiz:{q:'Die Frau bekommt ab Mai mehr ALG I. Das Jobcenter will den Bescheid ändern. Welche Norm?',opts:['§ 45 SGB X, der Bescheid ist jetzt falsch','§ 48 SGB X, die Verhältnisse haben sich geändert','§ 44 SGB X'],a:1,
+   e:'Richtig ist B. Der Bescheid war bei Erlass richtig. Erst die Änderung im Einkommen macht ihn falsch: § 48 SGB X, Aufhebung wegen Änderung der Verhältnisse. § 45 wäre es nur, wenn der Bescheid von Anfang an fehlerhaft war.'},
+  say:'Letztes Mini-Quiz, Pause drücken. Die Frau bekommt ab Mai mehr ALG I. Das Jobcenter will den Bescheid ändern. Welche Norm?'},
+ {view:'summary',p:['Schema: § 7 I 1, BG, Ausschlüsse, Bedarfe, Einkommen, Vermögen, Anspruch. Hilfebedürftigkeit zuletzt.','Bedarf blau, Einkommen rot, Freibetrag grün, Anspruch gold. Tabelle Zeile für Zeile.','Unsere Familie: 387,49 € / 347,40 € / 157,15 € / 172,48 €. Jetzt bist du dran.'],
+  say:'Das ganze Video in drei Sätzen. Erstens: Sieben Schritte, Hilfebedürftigkeit zuletzt. Zweitens: Bedarf blau, Einkommen rot, Freibetrag grün, Anspruch gold, Tabelle Zeile für Zeile. Drittens: Unsere Familie bekommt 387,49, 347,40, 157,15 und 172,48 Euro. Jetzt bist du dran.'},
+ {view:'practice',p:{},say:'Jetzt du: Rechne den Fall selbst nach. Hier ist die leere Tabelle. Nimm ein Blatt Papier, geh die sieben Schritte durch und vergleich am Ende mit der Lösung. Viel Erfolg in der Klausur.'},
+]}];
+
+/* ============ FIGUREN ============ */
+function personSVG(k){
+  const col={frau:'var(--p-frau)',mann:'var(--p-mann)',k1:'var(--p-k1)',k2:'var(--p-k2)'}[k];
+  if(k==='frau') return `<svg viewBox="0 0 60 100" aria-hidden="true"><circle cx="30" cy="16" r="13" fill="${col}"/><path d="M14 34h32l6 46H8z" fill="${col}"/><ellipse cx="40" cy="58" rx="9" ry="11" fill="${col}" stroke="var(--stage)" stroke-width="2"/><rect x="18" y="80" width="9" height="18" rx="3" fill="${col}"/><rect x="33" y="80" width="9" height="18" rx="3" fill="${col}"/></svg>`;
+  if(k==='mann') return `<svg viewBox="0 0 60 100" aria-hidden="true"><circle cx="30" cy="16" r="13" fill="${col}"/><rect x="12" y="32" width="36" height="46" rx="8" fill="${col}"/><rect x="16" y="78" width="11" height="20" rx="3" fill="${col}"/><rect x="33" y="78" width="11" height="20" rx="3" fill="${col}"/></svg>`;
+  if(k==='k1') return `<svg viewBox="0 0 60 100" aria-hidden="true"><circle cx="30" cy="40" r="14" fill="${col}"/><rect x="17" y="56" width="26" height="28" rx="7" fill="${col}"/><rect x="19" y="84" width="9" height="14" rx="3" fill="${col}"/><rect x="32" y="84" width="9" height="14" rx="3" fill="${col}"/></svg>`;
+  return `<svg viewBox="0 0 60 100" aria-hidden="true"><circle cx="30" cy="30" r="13" fill="${col}"/><rect x="15" y="46" width="30" height="34" rx="7" fill="${col}"/><rect x="18" y="80" width="10" height="18" rx="3" fill="${col}"/><rect x="32" y="80" width="10" height="18" rx="3" fill="${col}"/></svg>`;
+}
+
+/* ============ VIEWS ============ */
+const $=s=>document.querySelector(s);
+const view=$('#view');
+const V={};
+function reset(){view.innerHTML='';view.dataset.view='';}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+V.title=p=>{reset();view.innerHTML=`<div class="title fade"><div class="eyebrow">${p.eyebrow}</div><h2>${p.h}</h2><div class="hook">${p.hook}</div></div>`;};
+
+V.family=p=>{reset();
+  const kids={k1:1,k2:1};
+  view.innerHTML=`<h2 class="fade">Unsere Beispielfamilie</h2><div class="home fade">${P.map(k=>`
+    <div class="person ${kids[k]?'kid':''} ${p.highlight&&!p.highlight.includes(k)?'dim':''}">
+      ${p.marks&&p.marks[k]?`<span class="mark ${p.marks[k]}">${p.marks[k]==='ok'?'✓':p.marks[k]==='no'?'✗':'?'}</span>`:''}
+      ${personSVG(k)}<span class="name">${PN[k]}</span>
+      ${p.badges&&p.badges[k]?`<span class="badge ${p.bg?'bg':''}">${p.badges[k]}</span>`:''}
+    </div>`).join('')}</div>
+    <p class="fam-caption fade">${p.caption||''}</p>
+    <p class="fam-caption" style="color:var(--muted);font-size:.9rem">Miete 600 € kalt · 163 € Nebenkosten · 193 € Heizung · Kindergeld je 259 € · Frau ALG I 888 € · Mann 555 € brutto = netto</p>`;
+};
+
+V.schema=p=>{
+  const names=['§ 7 I 1 prüfen','Bedarfsgemeinschaft','Leistungsausschlüsse','Bedarfe','Einkommen','Vermögen','Anspruch'];
+  const subs=['Alter, erwerbsfähig, Aufenthalt','§ 7 III: Nr. 1 bis 4','§ 7 I 2, IV, V','RB + MB + KdU','bereinigen, verteilen','§ 12','Hilfebedürftig? Erst jetzt!'];
+  if(view.dataset.view!=='schema'){reset();view.dataset.view='schema';
+    view.innerHTML=`<h2>Das Prüfschema: 7 Schritte, feste Reihenfolge</h2><div class="schema">${names.map((n,i)=>`<div class="box ${i===6?'last':''}" data-i="${i+1}"><div class="n">${i+1}</div><div class="t">${n}</div><div class="s">${subs[i]}</div></div>`).join('')}</div><div class="merkslot"></div>`;}
+  view.querySelectorAll('.box').forEach(b=>{const i=+b.dataset.i;b.classList.toggle('on',i<=p.reveal);b.classList.toggle('active',i===p.active);});
+  const ms=view.querySelector('.merkslot');ms.innerHTML=p.merk?`<div class="merk pop">${p.merk}</div>`:'';
+};
+
+V.legend=()=>{reset();view.innerHTML=`<h2 class="fade">Feste Farbcodes im ganzen Video</h2><div class="legend fade">
+  <span><i class="bg-bedarf"></i>Bedarf = blau</span><span><i class="bg-eink"></i>Einkommen = rot</span><span><i class="bg-frei"></i>Freibetrag = grün</span><span><i class="bg-ansp"></i>Anspruch = gold</span></div>
+  <div class="bars fade" style="height:180px;max-width:520px"><div class="bar"><div class="stack" style="height:100%"><div class="seg rb" style="height:100%">Bedarf</div></div><div class="cap">blau</div></div>
+  <div class="bar"><div class="stack" style="height:60%"><div class="seg kg" style="height:100%">Einkommen</div></div><div class="cap">rot</div></div>
+  <div class="bar"><div class="stack" style="height:35%"><div class="seg" style="height:100%;background:var(--frei);color:#052e16">Freibetrag</div></div><div class="cap">grün</div></div>
+  <div class="bar"><div class="stack" style="height:45%"><div class="seg ans" style="height:100%">Anspruch</div></div><div class="cap">gold</div></div></div>`;};
+
+V.merk=p=>{reset();view.innerHTML=`<div style="height:100%;display:flex;flex-direction:column;justify-content:center;gap:16px"><div class="merk pop ${p.cls||''}" style="font-size:1.5rem">${p.html}</div>${p.sub?`<p class="fade" style="font-size:1.1rem;color:var(--muted)">${p.sub}</p>`:''}</div>`;};
+
+V.criteria=p=>{
+  const rows=[['Alter','15 Jahre bis Regelaltersgrenze'],['Erwerbsfähig','mind. 3 Stunden am Tag arbeiten können'],['Aufenthalt','gewöhnlicher Aufenthalt in Deutschland']];
+  if(view.dataset.view!=='criteria'){reset();view.dataset.view='criteria';
+    view.innerHTML=`<h2>Schritt 1: § 7 I 1 – drei Voraussetzungen</h2><table class="grid"><thead><tr><th>Voraussetzung</th>${P.map(k=>`<th>${PN[k]}</th>`).join('')}</tr></thead><tbody>${rows.map((r,i)=>`<tr class="hide" data-i="${i+1}"><td><b>${r[0]}</b><br><span style="color:var(--muted);font-size:.85rem">${r[1]}</span></td>${P.map(k=>`<td data-k="${k}"><span class="tick na">–</span></td>`).join('')}</tr>`).join('')}
+    <tr style="opacity:.6"><td><b>Hilfebedürftig</b><br><span style="color:var(--muted);font-size:.85rem">kommt ganz zuletzt (Schritt 7)</span></td><td colspan="4" style="color:var(--muted)">→ erst am Ende prüfen</td></tr></tbody></table><div class="merkslot"></div>`;}
+  view.querySelectorAll('tr[data-i]').forEach(tr=>{const i=+tr.dataset.i;const was=!tr.classList.contains('hide');tr.classList.toggle('hide',i>p.reveal);if(!was&&i<=p.reveal)tr.classList.add('fade');});
+  const sym={ok:'✓',no:'✗',na:'–',q:'?'};
+  P.forEach(k=>{const st=p.persons&&p.persons[k];view.querySelectorAll(`td[data-k="${k}"]`).forEach((td,i)=>{const s=st?st[i]:'na';td.innerHTML=`<span class="tick ${s} ${st?'pop':''}">${sym[s]}</span>`;});});
+  const ms=view.querySelector('.merkslot');
+  ms.innerHTML=(p.persons&&p.persons.k1)?`<div class="merk fade blue">Kinder unter 15: nicht erwerbsfähig, aber gleich über die <b>Bedarfsgemeinschaft</b> dabei.</div>`:(p.persons?`<div class="merk fade green">Frau und Mann: <b>erwerbsfähige Leistungsberechtigte (eLb)</b>.</div>`:'');
+};
+
+V.list=p=>{
+  if(view.dataset.view!=='list'||!p.keep){reset();view.dataset.view='list';
+    view.innerHTML=`<h2>${p.title}</h2><div class="list">${p.items.map((it,i)=>`<div class="it ${p.cls||''}" data-i="${i+1}"><div class="ic">${it.ic}</div><div><div class="t">${it.t}</div><div class="s">${it.s}</div></div></div>`).join('')}</div>`;}
+  view.querySelectorAll('.it').forEach(it=>{const i=+it.dataset.i;const was=it.classList.contains('on');it.classList.toggle('on',i<=p.reveal);if(!was&&i<=p.reveal)it.classList.add('fade');});
+};
+
+V.cards=p=>{reset();
+  view.innerHTML=`<h2>${p.title}</h2><div class="cards">${p.cards.map((c,i)=>`<div class="card ${c.cls||''} ${i<p.reveal?'on fade':''}" style="animation-delay:${i*.25}s"><div class="tag">${c.tag}</div><div class="head">${c.head}</div><div class="txt">${c.txt}</div></div>`).join('')}</div>${p.merk?`<div class="merk pop" style="animation-delay:1.2s">${p.merk}</div>`:''}`;};
+
+V.bg=p=>{
+  if(view.dataset.view!=='bg'){reset();view.dataset.view='bg';
+    view.innerHTML=`<h2>Schritt 2: Bedarfsgemeinschaft nach § 7 III</h2><div class="bgd">
+    <div class="node" data-n="n2"><div class="k">Nr. 2</div><div class="t">Eltern</div><div class="s">wenn der eLb ein unverheiratetes Kind unter 25 im Haushalt der Eltern ist</div></div>
+    <div class="center pop"><div class="n">Nr. 1: eLb</div><div>erwerbsfähige leistungsberechtigte Person</div><div style="font-size:.8rem;color:var(--muted)">Startpunkt. Ohne eLb keine BG.</div></div>
+    <div class="node" data-n="n3"><div class="k">Nr. 3</div><div class="t">Partner</div><div class="s">3a Ehegatte · 3b Lebenspartner · 3c VEG (Paar ohne Trauschein)</div></div>
+    <div class="node" data-n="n4"><div class="k">Nr. 4</div><div class="t">Kinder unter 25</div><div class="s">unverheiratet, im Haushalt, können sich nicht selbst versorgen</div></div>
+    <div class="node" data-n="n4b" style="grid-column:3"><div class="k">Tipp</div><div class="t">Mehrere eLb?</div><div class="s">Egal bei wem du startest, das Ergebnis ist dieselbe BG.</div></div></div>`;}
+  const order=['n2','n3','n3','n4','n4b'];
+  view.querySelectorAll('.node').forEach(n=>{const idx={n2:1,n3:3,n4:4,n4b:4}[n.dataset.n];n.classList.toggle('on',p.reveal>=idx);n.classList.toggle('hl',p.hl===n.dataset.n);});
+};
+
+V.rbs=p=>{
+  const data=[[1,563,'Alleinstehend / Alleinerziehend'],[2,506,'Partner (je Person)'],[3,451,'U25 im Haushalt der Eltern'],[4,471,'Jugendliche 14–17'],[5,390,'Kinder 6–13'],[6,357,'Kinder 0–5']];
+  if(view.dataset.view!=='rbs'){reset();view.dataset.view='rbs';
+    view.innerHTML=`<h2>Baustein 1: Regelbedarfsstufen</h2><div class="rbs">${data.map(d=>`<div class="st" data-s="${d[0]}"><div class="who"></div><div class="k">RBS ${d[0]}</div><div class="v">${d[1]} €</div><div class="w">${d[2]}</div></div>`).join('')}</div><div class="merkslot"></div>`;}
+  view.querySelectorAll('.st').forEach(s=>{const i=+s.dataset.s;s.classList.toggle('on',i<=p.reveal);s.classList.toggle('hl',(p.hl||[]).includes(i));
+    const who=p.who&&p.who[i]||[];s.querySelector('.who').innerHTML=who.map(k=>`<i style="background:var(--p-${k})" title="${PN[k]}"></i>`).join('');});
+  view.querySelector('.merkslot').innerHTML=p.who?`<div class="merk blue pop">Frau und Mann je <b>506 €</b> (RBS 2) · Kind 1 <b>357 €</b> (RBS 6) · Kind 2 <b>390 €</b> (RBS 5)</div>`:'';
+};
+
+function tableHTML(cls){return `<div class="tbl-wrap"><table class="calc ${cls||''}"><thead><tr><th>Position</th><th class="frau">Frau</th><th class="mann">Mann</th><th class="k1">Kind 1</th><th class="k2">Kind 2</th><th class="sum">Summe</th></tr></thead><tbody></tbody></table></div>`;}
+function rowHTML(key,blank){const r=ROWS[key];const vals=r.v;const sum=r.sum||(typeof vals[0]==='number'?fmt(vals.reduce((a,b)=>a+b,0)):'');
+  return `<tr class="row ${r.c}" data-k="${key}"><td>${r.l}</td>${vals.map(v=>`<td class="${blank?'blank':''}">${blank?'':(v===0?'–':fmt(v))}</td>`).join('')}<td class="sum ${blank?'blank':''}">${blank?'':sum}</td></tr>`;}
+V.table=p=>{
+  if(view.dataset.view!=='table'){reset();view.dataset.view='table';view.innerHTML=`<h2>Die Rechentabelle</h2>${tableHTML()}<div class="calcnote"></div><div class="merkslot"></div>`;}
+  const tb=view.querySelector('tbody');const want=p.rows||[];
+  [...tb.querySelectorAll('tr')].forEach(tr=>{if(!want.includes(tr.dataset.k))tr.remove();});
+  want.forEach((k,i)=>{let tr=tb.querySelector(`tr[data-k="${k}"]`);if(!tr){tb.insertAdjacentHTML('beforeend',rowHTML(k));tr=tb.lastElementChild;tr.classList.add('new');}
+    else tr.classList.remove('new');tr.classList.toggle('hl',k===p.hl);});
+  if(!want.length)tb.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--dim);padding:28px">Noch leer. Wächst ab Kapitel 4 Zeile für Zeile.</td></tr>`;
+  view.querySelector('.calcnote').innerHTML=(p.notes||[]).map((n,i)=>`<span class="${n.c} pop" style="animation-delay:${.3+i*.35}s">${n.t}</span>`).join('');
+  view.querySelector('.merkslot').innerHTML=p.note?`<div class="merk pop">${p.note}</div>`:'';
+};
+
+V.bars=p=>{reset();
+  const max=831.02;const d={frau:{rb:506,mb:86.02,kdu:239,kg:0,alg:312.31,erw:131.22,ans:387.49},mann:{rb:506,mb:0,kdu:239,kg:0,alg:279.97,erw:117.63,ans:347.40},k1:{rb:357,mb:0,kdu:239,kg:259,alg:126.64,erw:53.21,ans:157.15},k2:{rb:390,mb:0,kdu:239,kg:259,alg:139.08,erw:58.44,ans:172.48}};
+  const st=p.stage;
+  const h=v=>(v/max*100).toFixed(2)+'%';
+  view.innerHTML=`<h2>${st==='bedarf'?'Gesamtbedarf je Person':st==='kg'?'Kindergeld frisst beim Kind zuerst':'Bedarf, Einkommen, Anspruch'}</h2>
+  <div class="bars">${P.map(k=>{const x=d[k];const bed=x.rb+x.mb+x.kdu;
+    let segs;
+    if(st==='bedarf')segs=`<div class="seg rb" style="height:${h(x.rb)}">RB ${x.rb}</div>${x.mb?`<div class="seg mb" style="height:${h(x.mb)}">MB</div>`:''}<div class="seg kdu" style="height:${h(x.kdu)}">KdU 239</div>`;
+    else if(st==='kg')segs=`${x.kg?`<div class="seg kg" style="height:${h(x.kg)}">KG 259</div>`:''}<div class="seg rb" style="height:${h(bed-x.kg)}">${fmt(bed-x.kg)}</div>`;
+    else segs=`${x.kg?`<div class="seg kg" style="height:${h(x.kg)}">KG</div>`:''}<div class="seg alg" style="height:${h(x.alg)}">ALG</div><div class="seg erw" style="height:${h(x.erw)}">Lohn</div><div class="seg ans" style="height:${h(x.ans)}">${fmt(x.ans)}</div>`;
+    return `<div class="bar"><div class="stack" style="height:${h(bed)}">${segs}</div><div class="cap" style="color:var(--p-${k})">${PN[k]}</div><div class="val ${st==='ans'?'a':''}">${st==='ans'?fmt(x.ans):st==='kg'?'verbleibend '+fmt(bed-x.kg):fmt(bed)}</div></div>`;}).join('')}</div>
+  <div class="barlegend"><span><i style="background:var(--bedarf)"></i>Bedarf</span><span><i style="background:var(--eink)"></i>angerechnetes Einkommen</span><span><i style="background:var(--ansp)"></i>Anspruch</span></div>`;
+};
+
+V.fb=p=>{reset();
+  if(p.stage==='alg'){view.innerHTML=`<h2>Schritt 2a: Sonstiges Einkommen bereinigen (Frau)</h2><div class="fb">
+    <div class="steps"><div class="st r on"><div class="k">ALG I</div><div class="v">888,00 €</div></div><div class="st on"><div class="k">− Versicherungspauschale</div><div class="v">30,00 €</div></div><div class="st r on"><div class="k">bereinigt</div><div class="v">858,00 €</div></div></div>
+    <div class="merk green pop">Sonstiges Einkommen: <b>nur 30 € Pauschale</b>, kein Erwerbstätigen-Freibetrag.</div></div>`;return;}
+  const s=p.stage;const W=v=>(v/600*100)+'%';
+  view.innerHTML=`<h2>Schritt 2b: Erwerbseinkommen bereinigen (Mann)</h2><div class="fb">
+   <div class="scale">
+     <div class="seg brutto on" style="left:0;width:${W(555)}">Brutto 555 €</div>
+     <div class="seg f1 ${s>=2?'on':''}" style="left:0;width:${W(100)}">100 €</div>
+     <div class="seg f2 ${s>=3?'on':''}" style="left:${W(100)};width:${W(420)}">20 % von 420 € = 84 €</div>
+     <div class="seg f3 ${s>=4?'on':''}" style="left:${W(520)};width:${W(35)}">30 %</div>
+   </div>
+   <div class="ticks"><span style="left:0">0</span><span style="left:${W(100)}">100</span><span style="left:${W(520)}">520</span><span style="left:${W(555)}">555</span></div>
+   <div class="steps">
+     <div class="st ${s>=2?'on':''}"><div class="k">Grundfreibetrag</div><div class="v">100,00 €</div></div>
+     <div class="st ${s>=3?'on':''}"><div class="k">20 % (100–520 €)</div><div class="v">84,00 €</div></div>
+     <div class="st ${s>=4?'on':''}"><div class="k">30 % (520–1.000 €)</div><div class="v">10,50 €</div><div style="font-size:.8rem;color:var(--muted)">10 % (bis 1.200/1.500 €): nicht erreicht</div></div>
+     <div class="st ${s>=5?'on':''}"><div class="k">Freibetrag gesamt</div><div class="v">194,50 €</div></div>
+     <div class="st r ${s>=5?'on':''}"><div class="k">Netto 555 − 194,50</div><div class="v">360,50 €</div></div>
+   </div>
+   ${s>=5?`<div class="merk green pop">Freibetrag aus <b>BRUTTO</b> rechnen, vom <b>NETTO</b> abziehen.</div>`:''}</div>`;
+};
+
+V.cmp=()=>{reset();view.innerHTML=`<h2>Bonus: Bescheid ändern – § 48 oder § 45 SGB X?</h2><div class="cmp">
+ <div class="col a48 fade"><h3>§ 48 SGB X</h3><div class="q">„Das Leben hat sich geändert.“</div><ul><li>Bescheid war bei Erlass <b>richtig</b></li><li>Später: neues Einkommen, Umzug, Kind geboren</li><li>Aufhebung wegen Änderung der Verhältnisse</li><li>Kein Vertrauensschutz nötig</li></ul></div>
+ <div class="col a45 fade" style="animation-delay:.4s"><h3>§ 45 SGB X</h3><div class="q">„Der Fehler war schon drin.“</div><ul><li>Bescheid war von Anfang an <b>rechtswidrig</b></li><li>Rücknahme eines begünstigenden Bescheids</li><li><b>Vertrauensschutz prüfen</b>: Durfte die Person darauf vertrauen? Hat sie das Geld verbraucht?</li><li>Fristen beachten</li></ul></div></div>
+ <div class="merk pop" style="animation-delay:.9s"><b>48</b> = Leben geändert · <b>45</b> = Fehler war drin</div>`;};
+
+V.summary=p=>{reset();view.innerHTML=`<h2 class="fade">Zusammenfassung in 3 Sätzen</h2><div class="sum3">${p.map((s,i)=>`<div class="s fade" style="animation-delay:${i*.5}s"><b>${i+1}</b><span>${s}</span></div>`).join('')}</div>`;};
+
+V.practice=()=>{reset();
+  view.innerHTML=`<h2 class="fade">Jetzt du: Rechne den Fall selbst nach</h2><p>Frau (schwanger, 13. SSW), Mann, Kind 1 (4 J.), Kind 2 (8 J.). Miete 600 € kalt, 163 € NK, 193 € Heizung. Kindergeld je 259 €. Frau ALG I 888 €. Mann 555 € brutto = netto.</p>
+  <div id="prac">${tableHTML('practice')}</div><div><button class="primary" id="btnSol">Lösung einblenden</button> <button id="btnHide" hidden>Lösung ausblenden</button></div>`;
+  const tb=view.querySelector('tbody');const keys=Object.keys(ROWS);
+  const fill=blank=>{tb.innerHTML=keys.map(k=>rowHTML(k,blank)).join('');};
+  fill(true);
+  view.querySelector('#btnSol').onclick=e=>{fill(false);e.target.hidden=true;view.querySelector('#btnHide').hidden=false;};
+  view.querySelector('#btnHide').onclick=e=>{fill(true);e.target.hidden=true;view.querySelector('#btnSol').hidden=false;};
+};
+
+/* ============ PLAYER ============ */
+const FLAT=[];CH.forEach((c,ci)=>c.scenes.forEach((s,si)=>FLAT.push({...s,ci,si})));
+const words=t=>t.trim().split(/\s+/).length;
+const estSec=s=>words(s.say)/2.1+(s.quiz?26:1.4);
+const TOTAL=FLAT.reduce((a,s)=>a+estSec(s),0);
+const mmss=t=>{t=Math.max(0,Math.round(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
+let speakId=0,cur=-1,playing=false,timer=null,sceneStart=0,elapsedBefore=0,quizTimer=null,utterQueue=[],speakingDone=null;
+
+const stepList=$('#stepList');STEPS.forEach((s,i)=>{const li=document.createElement('li');li.dataset.n=i+1;li.innerHTML=`<span>${i+1} ${s}</span>`;li.title=s;stepList.appendChild(li);});
+const chaps=$('#chaps');CH.forEach((c,i)=>{const b=document.createElement('button');b.textContent=i+1;b.title=c.t;b.onclick=()=>goto(FLAT.findIndex(s=>s.ci===i));chaps.appendChild(b);});
+const seek=$('#seek');{let acc=0;CH.forEach((c,i)=>{if(i){const b=document.createElement('b');b.style.left=(acc/TOTAL*100)+'%';seek.appendChild(b);}c.scenes.forEach(s=>acc+=estSec(s));});}
+seek.onclick=e=>{const r=seek.getBoundingClientRect();const t=(e.clientX-r.left)/r.width*TOTAL;let acc=0;for(let i=0;i<FLAT.length;i++){acc+=estSec(FLAT[i]);if(acc>t){goto(i);return;}}};
+
+function stateAt(i){let step=1,done=[];for(let j=0;j<=i;j++){if(FLAT[j].step)step=FLAT[j].step;if(FLAT[j].done)done=FLAT[j].done;}return{step,done};}
+function render(i){
+  const s=FLAT[i];const st=stateAt(i);
+  $('#chap .num').textContent='Kap. '+(s.ci+1);$('#chapTitle').textContent=CH[s.ci].t;
+  $('#stepLbl').textContent=`Schritt ${st.step} von 7`;
+  stepList.querySelectorAll('li').forEach((li,k)=>{li.classList.toggle('active',k+1===st.step);li.classList.toggle('done',st.done.includes(k+1)&&k+1!==st.step);});
+  chaps.querySelectorAll('button').forEach((b,k)=>b.classList.toggle('cur',k===s.ci));
+  $('#subTxt').textContent=s.say;
+  const q=$('#quiz');
+  if(s.quiz){q.hidden=false;renderQuiz(s.quiz);}else{q.hidden=true;q.innerHTML='';V[s.view](s.p||{});}
+  elapsedBefore=FLAT.slice(0,i).reduce((a,x)=>a+estSec(x),0);
+}
+function renderQuiz(qz){
+  const q=$('#quiz');
+  q.innerHTML=`<div class="pause">⏸ Pause drücken und kurz nachdenken</div><h2>${qz.q}</h2><div class="opts">${qz.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="l">${'ABC'[i]}</span><span>${o}</span></button>`).join('')}</div>
+  <div class="ring"><span>Auflösung in</span><i></i><span class="cnt">20 s</span><button class="small" id="btnReveal">Jetzt auflösen</button></div><div class="expl" hidden>${qz.e}</div>`;
+  q.querySelectorAll('.opt').forEach(b=>b.onclick=()=>reveal(qz,+b.dataset.i));
+  q.querySelector('#btnReveal').onclick=()=>reveal(qz,-1);
+}
+let quizRevealed=false;
+function startCountdown(qz){
+  const q=$('#quiz');const bar=q.querySelector('.ring i');const cnt=q.querySelector('.cnt');let left=20;
+  bar.style.width='0';bar.style.transition='width 20s linear';requestAnimationFrame(()=>{bar.style.width='160px';});
+  clearInterval(quizTimer);quizTimer=setInterval(()=>{if(!playing)return;left--;cnt.textContent=left+' s';if(left<=0){clearInterval(quizTimer);reveal(qz,-1);}},1000);
+}
+function reveal(qz,picked){
+  if(quizRevealed)return;quizRevealed=true;clearInterval(quizTimer);
+  const q=$('#quiz');q.querySelectorAll('.opt').forEach((b,i)=>{b.classList.toggle('right',i===qz.a);if(picked===i&&i!==qz.a)b.classList.add('wrong');b.disabled=true;});
+  q.querySelector('.ring').hidden=true;const ex=q.querySelector('.expl');ex.hidden=false;ex.classList.add('pop');
+  $('#subTxt').textContent=qz.e;
+  speak(qz.e,()=>setTimeout(next,1200),Math.max(6,words(qz.e)/2.2+1));
+}
+
+/* Sprache */
+const synth=window.speechSynthesis;let voices=[];const voiceSel=$('#voice');
+function loadVoices(){if(!synth)return;voices=synth.getVoices().filter(v=>v.lang&&v.lang.toLowerCase().startsWith('de'));voiceSel.innerHTML='';
+  if(!voices.length){voiceSel.innerHTML='<option>keine deutsche Stimme</option>';return;}
+  const pref=['Google Deutsch','Katja','Conrad','Anna','Helena'];voices.sort((a,b)=>pref.findIndex(p=>b.name.includes(p))-pref.findIndex(p=>a.name.includes(p)));
+  voices.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v.name.replace('Microsoft ','').slice(0,28);voiceSel.appendChild(o);});
+  try{const saved=localStorage.getItem('bg-voice');if(saved&&voices[saved])voiceSel.value=saved;}catch(e){}}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+voiceSel.onchange=()=>{try{localStorage.setItem('bg-voice',voiceSel.value);}catch(e){}};
+const ttsOn=()=>$('#tts').checked&&synth&&voices.length>0;
+function speak(text,onDone,fallbackSec){
+  clearTimeout(timer);
+  if(!ttsOn()){timer=setTimeout(onDone,fallbackSec*1000/ +$('#rate').value);return;}
+  synth.cancel();
+  const myId=++speakId;
+  text=text.replace(/13\. Woche/g,'dreizehnten Woche').replace(/ALG I\b/g,'ALG 1').replace(/SGB X\b/g,'SGB zehn').replace(/\b3([abc])\b/g,'3 $1').replace(/§/g,'Paragraf');
+  let parts;try{parts=text.split(/(?<=[.!?])\s+(?=[A-ZÄÖÜ„0-9§])/);}catch(e){parts=[text];}
+  let idx=0;const rate=+$('#rate').value;
+  const nextPart=()=>{if(myId!==speakId||!playing)return;if(idx>=parts.length){onDone();return;}
+    const u=new SpeechSynthesisUtterance(parts[idx++].trim());u.lang='de-DE';u.voice=voices[voiceSel.value]||voices[0];u.rate=rate;u.pitch=1;
+    u.onend=()=>nextPart();u.onerror=e=>{if(e.error!=='interrupted'&&e.error!=='canceled')nextPart();};
+    synth.speak(u);};
+  nextPart();
+  timer=setTimeout(onDone,fallbackSec*1000*2.5);/* Sicherheitsnetz, falls die Stimme hängt */
+}
+
+function runScene(i){
+  const s=FLAT[i];quizRevealed=false;
+  speak(s.say,()=>{if(s.quiz)startCountdown(s.quiz);else setTimeout(next,s.view==='summary'?2500:900);},estSec(s)-(s.quiz?25:0));
+}
+function goto(i,autoplay=true){
+  if(i<0||i>=FLAT.length){stop();return;}
+  clearTimeout(timer);clearInterval(quizTimer);if(synth)synth.cancel();
+  cur=i;render(i);sceneStart=performance.now();tick();
+  $('#start').hidden=true;
+  if(autoplay){playing=true;$('#btnPlay').textContent='⏸ Pause';runScene(i);}else{playing=false;$('#btnPlay').textContent='▶ Weiter';}
+}
+function next(){if(!playing)return;if(cur+1>=FLAT.length){playing=false;$('#btnPlay').textContent='▶ Nochmal';$('#subTxt').textContent='Ende. Viel Erfolg in der Klausur!';return;}goto(cur+1);}
+function pause(){playing=false;clearTimeout(timer);clearInterval(quizTimer);if(synth)synth.cancel();$('#btnPlay').textContent='▶ Weiter';}
+function resume(){if(cur<0){goto(0);return;}if(cur>=FLAT.length-1&&!playing&&$('#btnPlay').textContent==='▶ Nochmal'){goto(0);return;}
+  playing=true;$('#btnPlay').textContent='⏸ Pause';
+  if(FLAT[cur].quiz&&quizRevealed){/* Auflösung lief schon: weiter */next();return;}
+  runScene(cur);}
+function stop(){playing=false;}
+$('#btnPlay').onclick=()=>playing?pause():resume();
+$('#btnStart').onclick=()=>goto(0);
+$('#btnNext').onclick=()=>goto(Math.min(cur+1,FLAT.length-1),playing);
+$('#btnPrev').onclick=()=>goto(Math.max(cur-1,0),playing);
+$('#btnFull').onclick=()=>{const el=document.documentElement;(document.fullscreenElement?document.exitFullscreen():el.requestFullscreen&&el.requestFullscreen()).catch(()=>{});};
+$('#rate').onchange=()=>{if(playing)runScene(cur);};
+document.addEventListener('keydown',e=>{if(['SELECT','INPUT','BUTTON'].includes(e.target.tagName))return;
+  if(e.code==='Space'){e.preventDefault();playing?pause():resume();}
+  else if(e.key==='ArrowRight')$('#btnNext').click();else if(e.key==='ArrowLeft')$('#btnPrev').click();
+  else if(/^[1-6]$/.test(e.key))goto(FLAT.findIndex(s=>s.ci===+e.key-1));});
+function tick(){if(cur<0)return;const el=elapsedBefore+(playing?Math.min((performance.now()-sceneStart)/1000,estSec(FLAT[cur])):0);
+  $('#time').textContent=`${mmss(el)} / ~${mmss(TOTAL)}`;seek.querySelector('i').style.width=(el/TOTAL*100)+'%';}
+setInterval(tick,500);
+$('#time').textContent=`0:00 / ~${mmss(TOTAL)}`;
+/* Vorschau im Ruhezustand: Familie sichtbar, bevor gestartet wird */
+V.family({caption:'Diese Familie begleitet uns durch das ganze Video.',badges:{frau:'schwanger, 13. SSW',mann:'555 € brutto',k1:'4 Jahre',k2:'8 Jahre'}});
+</script>
+</body>
+</html>
