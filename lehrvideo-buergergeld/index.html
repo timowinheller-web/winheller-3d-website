@@ -285,7 +285,7 @@ table.calc.practice td.blank::after{content:"_____"}
     <div id="quiz" hidden></div>
     <div id="start">
       <h1>Bürgergeld-Anspruch berechnen</h1>
-      <p>Lehrvideo in 6 Kapiteln (ca. 22 Minuten). Eine Familie, eine Tabelle, sieben Prüfschritte. Mit Sprecherstimme deines Browsers, Untertiteln und Quiz-Pausen.</p>
+      <p>Lehrvideo in 6 Kapiteln (ca. 22 Minuten). Eine Familie, eine Tabelle, sieben Prüfschritte. Mit Sprecherstimme, Untertiteln und Quiz-Pausen.</p>
       <button class="primary" id="btnStart">▶ Video starten</button>
       <p style="font-size:.85rem">Leertaste = Pause/Weiter · ← → = Szene zurück/vor · 1–6 = Kapitel</p>
     </div>
@@ -331,6 +331,10 @@ const ROWS={
   erw: {l:'− Anteil Erwerbseinkommen bereinigt 360,50 €',v:[131.22,117.63,53.21,58.44],c:'e'},
   ans: {l:'Anspruch',v:[387.49,347.40,157.15,172.48],c:'a sum'},
 };
+
+/* Vorproduzierte Sprecherstimme (Piper, Stimme „Thorsten“): Dauer je Datei in Sekunden. Fehlt eine Datei, springt die Browser-Stimme ein. */
+const AUDIO_DUR={"q10":9.3,"q22":14.55,"q32":11.31,"q47":12.98,"q55":28.29,"q76":17.82,"s00":12.02,"s01":15.26,"s02":13.32,"s03":10.19,"s04":8.54,"s05":9.27,"s06":11.91,"s07":18.49,"s08":13.84,"s09":10.11,"s10":5.62,"s11":13.79,"s12":8.36,"s13":11.62,"s14":10.14,"s15":10.16,"s16":12.54,"s17":13.77,"s18":15.36,"s19":20.48,"s20":17.92,"s21":9.53,"s22":9.64,"s23":20.19,"s24":9.04,"s25":12.36,"s26":10.55,"s27":15.23,"s28":8.67,"s29":22.1,"s30":24.4,"s31":21.39,"s32":8.91,"s33":23.25,"s34":8.49,"s35":10.21,"s36":39.0,"s37":15.93,"s38":9.48,"s39":30.3,"s40":13.45,"s41":18.18,"s42":7.81,"s43":5.98,"s44":11.7,"s45":21.86,"s46":9.77,"s47":9.67,"s48":20.56,"s49":12.3,"s50":15.54,"s51":13.95,"s52":20.53,"s53":7.78,"s54":16.01,"s55":11.73,"s56":11.44,"s57":5.64,"s58":11.02,"s59":22.26,"s60":22.23,"s61":27.9,"s62":27.43,"s63":21.97,"s64":10.95,"s65":39.31,"s66":9.46,"s67":20.32,"s68":7.97,"s69":4.65,"s70":11.18,"s71":6.9,"s72":8.86,"s73":6.56,"s74":18.05,"s75":33.1,"s76":9.38,"s77":28.53,"s78":11.68};
+const pad2=n=>String(n).padStart(2,'0');
 
 /* Kapitel & Szenen. say = Sprechertext, view = Visualisierung, step = aktiver Prüfschritt, done = erledigte Schritte */
 const CH=[
@@ -667,12 +671,12 @@ V.practice=()=>{reset();
 };
 
 /* ============ PLAYER ============ */
-const FLAT=[];CH.forEach((c,ci)=>c.scenes.forEach((s,si)=>FLAT.push({...s,ci,si})));
+const FLAT=[];CH.forEach((c,ci)=>c.scenes.forEach((s,si)=>FLAT.push({...s,ci,si,i:FLAT.length})));
 const words=t=>t.trim().split(/\s+/).length;
-const estSec=s=>words(s.say)/2.1+(s.quiz?26:1.4);
+const estSec=s=>{const a=AUDIO_DUR['s'+pad2(s.i)];if(a)return a+(s.quiz?20+(AUDIO_DUR['q'+pad2(s.i)]||6)+1.5:1.4);return words(s.say)/2.1+(s.quiz?26:1.4);};
 const TOTAL=FLAT.reduce((a,s)=>a+estSec(s),0);
 const mmss=t=>{t=Math.max(0,Math.round(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
-let speakId=0,cur=-1,playing=false,timer=null,sceneStart=0,elapsedBefore=0,quizTimer=null,utterQueue=[],speakingDone=null;
+let speakId=0,curAudio=null,cur=-1,playing=false,timer=null,sceneStart=0,elapsedBefore=0,quizTimer=null,utterQueue=[],speakingDone=null;
 
 const stepList=$('#stepList');STEPS.forEach((s,i)=>{const li=document.createElement('li');li.dataset.n=i+1;li.innerHTML=`<span>${i+1} ${s}</span>`;li.title=s;stepList.appendChild(li);});
 const chaps=$('#chaps');CH.forEach((c,i)=>{const b=document.createElement('button');b.textContent=i+1;b.title=c.t;b.onclick=()=>goto(FLAT.findIndex(s=>s.ci===i));chaps.appendChild(b);});
@@ -709,22 +713,35 @@ function reveal(qz,picked){
   const q=$('#quiz');q.querySelectorAll('.opt').forEach((b,i)=>{b.classList.toggle('right',i===qz.a);if(picked===i&&i!==qz.a)b.classList.add('wrong');b.disabled=true;});
   q.querySelector('.ring').hidden=true;const ex=q.querySelector('.expl');ex.hidden=false;ex.classList.add('pop');
   $('#subTxt').textContent=qz.e;
-  speak(qz.e,()=>setTimeout(next,1200),Math.max(6,words(qz.e)/2.2+1));
+  speak(qz.e,()=>setTimeout(next,1200),Math.max(6,words(qz.e)/2.2+1),'q'+pad2(cur));
 }
 
 /* Sprache */
 const synth=window.speechSynthesis;let voices=[];const voiceSel=$('#voice');
-function loadVoices(){if(!synth)return;voices=synth.getVoices().filter(v=>v.lang&&v.lang.toLowerCase().startsWith('de'));voiceSel.innerHTML='';
-  if(!voices.length){voiceSel.innerHTML='<option>keine deutsche Stimme</option>';return;}
-  const pref=['Google Deutsch','Katja','Conrad','Anna','Helena'];voices.sort((a,b)=>pref.findIndex(p=>b.name.includes(p))-pref.findIndex(p=>a.name.includes(p)));
-  voices.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v.name.replace('Microsoft ','').slice(0,28);voiceSel.appendChild(o);});
-  try{const saved=localStorage.getItem('bg-voice');if(saved&&voices[saved])voiceSel.value=saved;}catch(e){}}
-if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
-voiceSel.onchange=()=>{try{localStorage.setItem('bg-voice',voiceSel.value);}catch(e){}};
-const ttsOn=()=>$('#tts').checked&&synth&&voices.length>0;
-function speak(text,onDone,fallbackSec){
-  clearTimeout(timer);
-  if(!ttsOn()){timer=setTimeout(onDone,fallbackSec*1000/ +$('#rate').value);return;}
+const hasAudio=Object.keys(AUDIO_DUR).length>0;
+function loadVoices(){voices=synth?synth.getVoices().filter(v=>v.lang&&v.lang.toLowerCase().startsWith('de')):[];voiceSel.innerHTML='';
+  if(hasAudio){const o=document.createElement('option');o.value='file';o.textContent='Sprecher „Thorsten“ (Audio)';voiceSel.appendChild(o);}
+  const score=v=>(/natural|online|google|premium|enhanced|neural/i.test(v.name)?2:0)+(/katja|conrad|anna|helena|petra|hedda/i.test(v.name)?1:0);
+  voices.sort((a,b)=>score(b)-score(a));
+  voices.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent='Browser: '+v.name.replace('Microsoft ','').replace('Google ','').slice(0,26);voiceSel.appendChild(o);});
+  if(!hasAudio&&!voices.length)voiceSel.innerHTML='<option>keine deutsche Stimme</option>';
+  try{const saved=localStorage.getItem('bg-voice');if(saved==='file'&&hasAudio)voiceSel.value='file';else if(saved&&voices[saved])voiceSel.value=saved;}catch(e){}}
+loadVoices();if(synth)synth.onvoiceschanged=loadVoices;
+voiceSel.onchange=()=>{try{localStorage.setItem('bg-voice',voiceSel.value);}catch(e){}if(playing)runScene(cur);};
+function stopAudio(){if(curAudio){curAudio.onended=null;curAudio.onerror=null;curAudio.pause();curAudio=null;}if(synth)synth.cancel();}
+function speak(text,onDone,fallbackSec,key){
+  clearTimeout(timer);stopAudio();
+  if(!$('#tts').checked){timer=setTimeout(onDone,fallbackSec*1000/ +$('#rate').value);return;}
+  if(voiceSel.value==='file'&&key&&AUDIO_DUR[key]){
+    const a=new Audio('audio/'+key+'.mp3');a.playbackRate=+$('#rate').value;curAudio=a;
+    a.onended=()=>{if(curAudio===a){curAudio=null;setTimeout(onDone,250);}};
+    a.onerror=()=>{if(curAudio===a){curAudio=null;speakTTS(text,onDone,fallbackSec);}};
+    a.play().catch(()=>{if(curAudio===a){curAudio=null;speakTTS(text,onDone,fallbackSec);}});
+    return;}
+  speakTTS(text,onDone,fallbackSec);
+}
+function speakTTS(text,onDone,fallbackSec){
+  if(!synth||!voices.length){timer=setTimeout(onDone,fallbackSec*1000/ +$('#rate').value);return;}
   synth.cancel();
   const myId=++speakId;
   text=text.replace(/13\. Woche/g,'dreizehnten Woche').replace(/ALG I\b/g,'ALG 1').replace(/SGB X\b/g,'SGB zehn').replace(/\b3([abc])\b/g,'3 $1').replace(/§/g,'Paragraf');
@@ -740,19 +757,20 @@ function speak(text,onDone,fallbackSec){
 
 function runScene(i){
   const s=FLAT[i];quizRevealed=false;
-  speak(s.say,()=>{if(s.quiz)startCountdown(s.quiz);else setTimeout(next,s.view==='summary'?2500:900);},estSec(s)-(s.quiz?25:0));
+  speak(s.say,()=>{if(s.quiz)startCountdown(s.quiz);else setTimeout(next,s.view==='summary'?2500:900);},estSec(s)-(s.quiz?25:0),'s'+pad2(i));
 }
 function goto(i,autoplay=true){
   if(i<0||i>=FLAT.length){stop();return;}
-  clearTimeout(timer);clearInterval(quizTimer);if(synth)synth.cancel();
+  clearTimeout(timer);clearInterval(quizTimer);stopAudio();
   cur=i;render(i);sceneStart=performance.now();tick();
   $('#start').hidden=true;
   if(autoplay){playing=true;$('#btnPlay').textContent='⏸ Pause';runScene(i);}else{playing=false;$('#btnPlay').textContent='▶ Weiter';}
 }
 function next(){if(!playing)return;if(cur+1>=FLAT.length){playing=false;$('#btnPlay').textContent='▶ Nochmal';$('#subTxt').textContent='Ende. Viel Erfolg in der Klausur!';return;}goto(cur+1);}
-function pause(){playing=false;clearTimeout(timer);clearInterval(quizTimer);if(synth)synth.cancel();$('#btnPlay').textContent='▶ Weiter';}
+function pause(){playing=false;clearTimeout(timer);clearInterval(quizTimer);if(curAudio)curAudio.pause();else if(synth)synth.cancel();$('#btnPlay').textContent='▶ Weiter';}
 function resume(){if(cur<0){goto(0);return;}if(cur>=FLAT.length-1&&!playing&&$('#btnPlay').textContent==='▶ Nochmal'){goto(0);return;}
   playing=true;$('#btnPlay').textContent='⏸ Pause';
+  if(curAudio&&curAudio.paused){curAudio.play().catch(()=>runScene(cur));return;}/* Audio an der Stelle fortsetzen */
   if(FLAT[cur].quiz&&quizRevealed){/* Auflösung lief schon: weiter */next();return;}
   runScene(cur);}
 function stop(){playing=false;}
@@ -761,7 +779,7 @@ $('#btnStart').onclick=()=>goto(0);
 $('#btnNext').onclick=()=>goto(Math.min(cur+1,FLAT.length-1),playing);
 $('#btnPrev').onclick=()=>goto(Math.max(cur-1,0),playing);
 $('#btnFull').onclick=()=>{const el=document.documentElement;(document.fullscreenElement?document.exitFullscreen():el.requestFullscreen&&el.requestFullscreen()).catch(()=>{});};
-$('#rate').onchange=()=>{if(playing)runScene(cur);};
+$('#rate').onchange=()=>{if(curAudio)curAudio.playbackRate=+$('#rate').value;else if(playing)runScene(cur);};
 document.addEventListener('keydown',e=>{if(['SELECT','INPUT','BUTTON'].includes(e.target.tagName))return;
   if(e.code==='Space'){e.preventDefault();playing?pause():resume();}
   else if(e.key==='ArrowRight')$('#btnNext').click();else if(e.key==='ArrowLeft')$('#btnPrev').click();
