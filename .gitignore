@@ -1,3 +1,4 @@
-.claude/
+.claude/*
+!.claude/skills/
 .DS_Store
 .taste-skill/
