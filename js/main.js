@@ -21,7 +21,7 @@ if(!reduce && 'IntersectionObserver' in window){
   let rvPend=false; const rvSweep=()=>{ rvPend=false; document.querySelectorAll('.rv:not(.in)').forEach(el=>{ if(el.getBoundingClientRect().top<innerHeight){ el.classList.add('in'); io.unobserve(el); } }); };
   addEventListener('scroll',()=>{ if(!rvPend){ rvPend=true; requestAnimationFrame(rvSweep); } },{passive:true});
   document.querySelectorAll('.band').forEach(sec=>{
-    sec.querySelectorAll('.head h2, .head .lede, .flow__step, .stat, .mats, .item, .idea, .mail, .faq > div:first-child, .faq__list').forEach((el,i)=>{ el.classList.add('rv'); el.style.setProperty('--i',i); io.observe(el); });
+    sec.querySelectorAll('.head h2, .head .lede, .team__media, .team__text, .flow__step, .stat, .mats, .item, .idea, .mail, .faq > div:first-child, .faq__list').forEach((el,i)=>{ el.classList.add('rv'); el.style.setProperty('--i',i); io.observe(el); });
   });
 } else document.documentElement.classList.remove('js');
 
