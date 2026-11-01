@@ -1,0 +1,413 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-01T06:40:07+00:00",
+  "title": "Design System: Winheller 3D Manufaktur",
+  "extensions": {
+    "colorMeta": {
+      "gold": {
+        "role": "primary",
+        "displayName": "Sockelgold",
+        "canonical": "#D5A34A",
+        "tonalRamp": [
+          "#342A18",
+          "#5C4824",
+          "#87662C",
+          "#B68630",
+          "#D0A558",
+          "#D8C197",
+          "#E7DDCB",
+          "#F6F3EF"
+        ]
+      },
+      "gold-hi": {
+        "role": "primary",
+        "displayName": "Helles Sockelgold",
+        "canonical": "#E3B357",
+        "tonalRamp": [
+          "#362B16",
+          "#604A20",
+          "#8E6A25",
+          "#C08B26",
+          "#D9AA4F",
+          "#DDC392",
+          "#E9DEC9",
+          "#F6F4EE"
+        ]
+      },
+      "gold-lo": {
+        "role": "primary",
+        "displayName": "Dunkles Gold",
+        "canonical": "#B8862F",
+        "tonalRamp": [
+          "#332A19",
+          "#5A4725",
+          "#85652E",
+          "#B38433",
+          "#CDA35A",
+          "#D7C098",
+          "#E6DCCC",
+          "#F6F3EF"
+        ]
+      },
+      "gold-text": {
+        "role": "primary",
+        "displayName": "Gold für Schrift",
+        "canonical": "#7F5C1C",
+        "tonalRamp": [
+          "#342A18",
+          "#5C4823",
+          "#88672B",
+          "#B8872E",
+          "#D2A656",
+          "#D9C196",
+          "#E7DDCB",
+          "#F6F3EF"
+        ]
+      },
+      "gold-display": {
+        "role": "primary",
+        "displayName": "Gold für Überschriften",
+        "canonical": "#8F6A22",
+        "tonalRamp": [
+          "#342B19",
+          "#5B4924",
+          "#86682C",
+          "#B58830",
+          "#D0A758",
+          "#D8C297",
+          "#E6DDCB",
+          "#F6F3EF"
+        ]
+      },
+      "anthrazit": {
+        "role": "neutral",
+        "displayName": "Anthrazit",
+        "canonical": "#3A3939",
+        "tonalRamp": [
+          "#262626",
+          "#403F3F",
+          "#5A5959",
+          "#747272",
+          "#959393",
+          "#B8B7B7",
+          "#D9D9D9",
+          "#F2F2F2"
+        ]
+      },
+      "tief": {
+        "role": "neutral",
+        "displayName": "Tiefschwarz",
+        "canonical": "#1E1E1E",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#949494",
+          "#B8B8B8",
+          "#D9D9D9",
+          "#F2F2F2"
+        ]
+      },
+      "nacht": {
+        "role": "neutral",
+        "displayName": "Nachtschwarz",
+        "canonical": "#141313",
+        "tonalRamp": [
+          "#272626",
+          "#413F3F",
+          "#5B5757",
+          "#767070",
+          "#969191",
+          "#B9B6B6",
+          "#D9D8D8",
+          "#F2F2F2"
+        ]
+      },
+      "weiss": {
+        "role": "neutral",
+        "displayName": "Weiß",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#949494",
+          "#B8B8B8",
+          "#D9D9D9",
+          "#F2F2F2"
+        ]
+      },
+      "marmor": {
+        "role": "neutral",
+        "displayName": "Marmor",
+        "canonical": "#F3F1ED",
+        "tonalRamp": [
+          "#2B2822",
+          "#494337",
+          "#685E4B",
+          "#887A5D",
+          "#A79A81",
+          "#C2BBAD",
+          "#DDDAD4",
+          "#F3F3F1"
+        ]
+      },
+      "marmor-2": {
+        "role": "neutral",
+        "displayName": "Marmor tief",
+        "canonical": "#E9E5DE",
+        "tonalRamp": [
+          "#2B2722",
+          "#494237",
+          "#685D4B",
+          "#88795D",
+          "#A79981",
+          "#C2BAAD",
+          "#DDDAD4",
+          "#F3F3F1"
+        ]
+      },
+      "stein": {
+        "role": "neutral",
+        "displayName": "Stein",
+        "canonical": "#605D59",
+        "tonalRamp": [
+          "#272625",
+          "#41403E",
+          "#5C5A56",
+          "#77736F",
+          "#989490",
+          "#BAB8B6",
+          "#DAD9D8",
+          "#F2F2F2"
+        ]
+      },
+      "linie": {
+        "role": "neutral",
+        "displayName": "Fuge",
+        "canonical": "#E3E0DA",
+        "tonalRamp": [
+          "#292723",
+          "#46423A",
+          "#635D4F",
+          "#827864",
+          "#A19886",
+          "#BFBAB0",
+          "#DCDAD6",
+          "#F3F3F1"
+        ]
+      },
+      "nacht-text": {
+        "role": "neutral",
+        "displayName": "Nachttext",
+        "canonical": "#B9B5AE",
+        "tonalRamp": [
+          "#282725",
+          "#43413C",
+          "#5F5B54",
+          "#7B756B",
+          "#9B968D",
+          "#BBB9B4",
+          "#DAD9D7",
+          "#F3F2F2"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Claim",
+        "purpose": "Nur der zweizeilige Hero-Claim."
+      },
+      "headline": {
+        "displayName": "Abschnitt",
+        "purpose": "h2 der Bänder, Versalien."
+      },
+      "title": {
+        "displayName": "Titel",
+        "purpose": "Produktnamen, Schritte, FAQ-Fragen."
+      },
+      "body": {
+        "displayName": "Text",
+        "purpose": "Fließtext."
+      },
+      "body-small": {
+        "displayName": "Text klein",
+        "purpose": "Fakten, Bildunterschriften."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons, Navigation, Chips."
+      },
+      "brand": {
+        "displayName": "Marke",
+        "purpose": "Nur die E-Mail-Adresse."
+      }
+    },
+    "shadows": [
+      {
+        "name": "glass-lift",
+        "value": "0 1px 0 rgba(255,255,255,.6) inset,0 10px 24px -16px rgba(30,30,30,.25)",
+        "purpose": "Helle Glasflächen."
+      },
+      {
+        "name": "glass-lift-dark",
+        "value": "0 1px 0 rgba(255,255,255,.12) inset,0 12px 28px -18px rgba(0,0,0,.5)",
+        "purpose": "Dunkle Glasfläche im Anfrage-Band."
+      },
+      {
+        "name": "menu",
+        "value": "0 12px 28px -18px rgba(30,30,30,.35)",
+        "purpose": "Aufgeklapptes Handy-Menü."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(.23,1,.32,1)",
+        "purpose": "Eintritte, Drücken, Unterstriche."
+      },
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.2,.7,.2,1)",
+        "purpose": "FAQ-Plus-Drehung."
+      },
+      {
+        "name": "layers",
+        "value": "clip-path inset 100%→0, .9s steps(14,end)",
+        "purpose": "Claim baut sich in Druckschichten auf."
+      },
+      {
+        "name": "reveal",
+        "value": "opacity + translateY(24px), .6–.7s ease-out, 80ms Staffel",
+        "purpose": "Einmaliger Eintritt von Abschnittsteilen."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "600px"
+      },
+      {
+        "name": "compact",
+        "value": "700px"
+      },
+      {
+        "name": "catalog",
+        "value": "800px"
+      },
+      {
+        "name": "nav",
+        "value": "900px"
+      },
+      {
+        "name": "container",
+        "value": "1240px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Haupt-Aufruf, z. B. Figur anfragen.",
+      "html": "<button class=\"ds-btn\">Figur anfragen</button>",
+      "css": ".ds-btn{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;text-transform:uppercase;font-size:17px;letter-spacing:.04em;border:0;cursor:pointer;padding:14px 24px;border-radius:999px;background:#D5A34A;color:#1E1E1E;transition:background-color .2s ease,transform .16s cubic-bezier(.23,1,.32,1)}.ds-btn:hover{background:#E3B357}.ds-btn:active{transform:scale(.97)}.ds-btn:focus-visible{outline:2px solid #7F5C1C;outline-offset:3px}"
+    },
+    {
+      "name": "Line Button",
+      "kind": "button",
+      "refersTo": "button-line",
+      "description": "Zweiter Aufruf, z. B. Sortiment ansehen.",
+      "html": "<button class=\"ds-btn-line\">Sortiment ansehen</button>",
+      "css": ".ds-btn-line{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;text-transform:uppercase;font-size:17px;letter-spacing:.04em;border:0;cursor:pointer;padding:14px 24px;border-radius:999px;background:transparent;color:#1E1E1E;box-shadow:inset 0 0 0 2px currentColor;transition:background-color .2s ease,color .2s ease}.ds-btn-line:hover{background:#1E1E1E;color:#fff}.ds-btn-line:focus-visible{outline:2px solid #7F5C1C;outline-offset:3px}"
+    },
+    {
+      "name": "Finish Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Auswahl von Figur und Finish im Hero.",
+      "html": "<button class=\"ds-chip\" aria-pressed=\"true\"><i style=\"background:#D5A34A\"></i>Gold</button> <button class=\"ds-chip\" aria-pressed=\"false\"><i style=\"background:#F3F1ED\"></i>Marmor-Weiß</button>",
+      "css": ".ds-chip{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:600;text-transform:uppercase;font-size:17px;letter-spacing:.03em;cursor:pointer;padding:10px 15px;display:inline-flex;gap:8px;align-items:center;border-radius:999px;background:rgba(255,255,255,.86);color:#1E1E1E;border:1px solid rgba(255,255,255,.75);box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 10px 24px -14px rgba(30,30,30,.4)}.ds-chip i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}.ds-chip[aria-pressed=\"true\"]{background:rgba(30,30,30,.9);color:#fff}.ds-chip:hover:not([aria-pressed=\"true\"]){background:#E9E5DE}.ds-chip:focus-visible{outline:2px solid #7F5C1C;outline-offset:3px}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Klebende Glasleiste.",
+      "html": "<nav class=\"ds-nav\"><b>3D Manufaktur</b><span><a href=\"#\">Ablauf</a><a href=\"#\">Sortiment</a><a href=\"#\">Fragen</a></span></nav>",
+      "css": ".ds-nav{display:flex;justify-content:space-between;align-items:center;height:68px;padding:0 16px;background:rgba(255,255,255,.6);backdrop-filter:blur(20px) saturate(1.8);font-family:'Barlow Condensed','Arial Narrow',sans-serif;text-transform:uppercase;color:#1E1E1E}.ds-nav span{display:flex;gap:28px}.ds-nav a{color:#1E1E1E;text-decoration:none;font-weight:600;letter-spacing:.06em;padding-block:6px;background:linear-gradient(#D5A34A,#D5A34A) left bottom/0 2px no-repeat;transition:background-size .25s cubic-bezier(.23,1,.32,1)}.ds-nav a:hover,.ds-nav a:focus-visible{background-size:100% 2px}"
+    },
+    {
+      "name": "Produkt-Karte",
+      "kind": "card",
+      "refersTo": "card-glass",
+      "description": "Katalog-Eintrag mit Bild, Text und Fakten.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card__img\"></div><div><h4>Deine Figur</h4><p>Du schickst uns ein Foto, wir drucken die Figur direkt in Farbe.</p><dl><div><dt>Material</dt><dd>PLA matt, bis zu 8 Farben</dd></div></dl></div></article>",
+      "css": ".ds-card{display:grid;grid-template-columns:.85fr 1.15fr;gap:24px;align-items:center;padding:16px;border-radius:26px;background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.75);box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 10px 24px -16px rgba(30,30,30,.25);font-family:'Barlow',system-ui,sans-serif;color:#3A3939}.ds-card__img{aspect-ratio:4/5;border-radius:20px;background:#E9E5DE}.ds-card h4{font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;text-transform:uppercase;font-size:26px;line-height:1;color:#1E1E1E;margin:0 0 12px}.ds-card dl{margin:12px 0 0}.ds-card dl div{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:10px 0;border-top:1px solid rgba(30,30,30,.1);font-size:15px}.ds-card dt{font-weight:600;color:#1E1E1E}.ds-card dd{margin:0}"
+    },
+    {
+      "name": "FAQ",
+      "kind": "custom",
+      "refersTo": "faq-item",
+      "description": "Aufklappbarer Glasstreifen mit goldenem Plus.",
+      "html": "<details class=\"ds-faq\"><summary>Welche Fotos eignen sich?</summary><p>Am besten mehrere: die ganze Person von vorne, dazu Seite oder Rücken.</p></details>",
+      "css": ".ds-faq{background:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.75);border-radius:18px}.ds-faq summary{list-style:none;cursor:pointer;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;font-family:'Barlow Condensed','Arial Narrow',sans-serif;font-weight:700;text-transform:uppercase;font-size:22px;color:#1E1E1E}.ds-faq summary::after{content:'';width:14px;height:14px;background:linear-gradient(#7F5C1C,#7F5C1C) center/100% 2px no-repeat,linear-gradient(#7F5C1C,#7F5C1C) center/2px 100% no-repeat;transition:transform .25s cubic-bezier(.2,.7,.2,1)}.ds-faq[open] summary::after{transform:rotate(45deg)}.ds-faq p{margin:0 24px 22px;color:#605D59;font-family:'Barlow',system-ui,sans-serif}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Die Druckplatte",
+    "overview": "Die Seite zeigt, wie eine Figur Schicht für Schicht entsteht. Feine waagerechte Schichtlinien liegen wie auf einem gedruckten Objekt über dem Hero, der Claim baut sich in sichtbaren Druckschichten von unten auf, ein Höhen-Readout zählt die Druckhöhe mit. Das Material der Marke ist das Material der Produkte: Marmor als ruhige Fläche, Anthrazit als Struktur, Gold als einzelner, kostbarer Akzent wie das Schild am Sockel.\n\nDie Typografie spricht laut und kurz: schmale, fette Versalien (Barlow Condensed) für alles, was ruft, eine ruhige Barlow für alles, was erklärt. Bilder sind groß, warm und zeigen die Figur im Alltag. Die Dichte ist großzügig: wenige Abschnitte mit viel Luft (96 px Abstand zwischen Bändern), jeder Abschnitt hat eine klare Aufgabe.\n\nDer aktuelle Stand trägt außerdem eine Glas-Schicht: halbtransparente helle und dunkle Flächen vor weichen Kulissenbildern und Lichtkreisen, stark abgerundete Formen. Diese Glas-Schicht ist **dokumentiert, aber offen**: Sie gilt für neue Bereiche, bis eine Prüfung (z. B. `/impeccable critique`) etwas anderes empfiehlt und der Inhaber zustimmt. Die Druckplatte selbst (Schichtlinien, Farben, Schriften) ist verbindlich.",
+    "keyCharacteristics": [
+      "Schichtlinien und Schicht-für-Schicht-Aufbau als wiederkehrendes Motiv",
+      "Marmor + Anthrazit als Grundton, Gold sparsam als Akzent",
+      "Schmale fette Versalien für Überschriften, ruhige Grotesk für Text",
+      "Große warme Produktbilder, großzügige Abstände",
+      "Glas-Flächen und runde Formen (offen, wird geprüft)"
+    ],
+    "rules": [
+      {
+        "name": "The Sockelschild Rule",
+        "body": "Gold ist der Akzent, nie die Fläche. Pro Bildschirm trägt höchstens ein Element eine goldene Fläche (meist der Haupt-Button).",
+        "section": "colors"
+      },
+      {
+        "name": "The Lesbares-Gold Rule",
+        "body": "Gold als Schrift auf Hell immer in gold-text oder gold-display, nie im reinen Sockelgold (Kontrast zu gering).",
+        "section": "colors"
+      },
+      {
+        "name": "The Versalien-ruft Rule",
+        "body": "Barlow Condensed in Versalien nur für Überschriften, Buttons, Navigation und kurze Kennzahlen. Fließtext ist nie in Versalien.",
+        "section": "typography"
+      },
+      {
+        "name": "The Eine-Marke Rule",
+        "body": "Montserrat erscheint nur bei der E-Mail-Adresse. Keine vierte Schrift.",
+        "section": "typography"
+      },
+      {
+        "name": "The Feste-Fläche Rule",
+        "body": "Wer reduzierte Transparenz eingestellt hat, bekommt feste weiße bzw. dunkle Flächen und keine Kulissen.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do Gold sparsam einsetzen: eine goldene Fläche pro Bildschirm, Gold als Schrift nur in gold-text oder gold-display.",
+      "Do Überschriften in Barlow Condensed 700 Versalien, Text in Barlow 400 bei 17 px / 1.6.",
+      "Do Bänder mit 96 px Abstand (64 px mobil) und dem 1240-px-Container.",
+      "Do Bewegung mit ease-out (`cubic-bezier(.23,1,.32,1)`), kurz (160–700 ms), und bei reduzierter Bewegung alles sofort sichtbar.",
+      "Do Schriften und Skripte lokal halten, Bilder als WebP in 400/800/1200 px mit `srcset`.",
+      "Do Klickflächen mindestens 44 px auf dem Handy."
+    ],
+    "donts": [
+      "Don't reines Sockelgold (#D5A34A) als Schriftfarbe auf Weiß oder Marmor.",
+      "Don't eine weitere Schriftfamilie oder eine neue Akzentfarbe einführen.",
+      "Don't Fließtext in Versalien oder in Barlow Condensed setzen.",
+      "Don't Google Fonts, CDNs oder andere externe Anfragen einbinden.",
+      "Don't Live-Unschärfe (backdrop-filter) auf weitere große Flächen legen; sie bleibt der Navigation vorbehalten."
+    ]
+  }
+}
