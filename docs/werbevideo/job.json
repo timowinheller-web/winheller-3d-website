@@ -1,0 +1,46 @@
+[
+  {
+    "created_at": "2026-10-31T11:54:11.433882Z",
+    "display_name": "Seedance 2.0 Mini",
+    "id": "736a9402-68ae-4ed2-be1a-e64129cb9e66",
+    "job_type": "seedance_2_0_mini",
+    "min_result_url": null,
+    "params": {
+      "aspect_ratio": "9:16",
+      "duration": 15,
+      "generate_audio": true,
+      "genre": "auto",
+      "height": 1280,
+      "medias": [
+        {
+          "data": {
+            "id": "7351e839-0f49-469c-b7f9-34834c2e95a3",
+            "type": "media_input",
+            "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3L8WbhNUQYOhex3XpLqqT4Hpl72/7351e839-0f49-469c-b7f9-34834c2e95a3.png"
+          },
+          "role": "image"
+        },
+        {
+          "data": {
+            "id": "2429c7e5-b7ff-4e1a-8b6e-780e063dcb95",
+            "type": "media_input",
+            "url": "https://d2ol7oe51mr4n9.cloudfront.net/user_3L8WbhNUQYOhex3XpLqqT4Hpl72/2429c7e5-b7ff-4e1a-8b6e-780e063dcb95.jpg"
+          },
+          "role": "image"
+        }
+      ],
+      "multi_prompt": [],
+      "multi_shot_mode": "custom",
+      "multi_shots": false,
+      "prompt": "Premium 15-second vertical brand commercial for a small German 3D-printing workshop. Clean, warm, high-end product cinematography. Color world: light warm marble (#F3F1ED), anthracite (#3A3939), soft gold accents (#D5A34A). Soft window daylight, shallow depth of field, slow deliberate camera moves, no people visible, no text, no logos, no captions.\n\nShot 1 (0-3s): Macro close-up of a 3D printer nozzle laying down fine layers in anthracite filament on a marble-white build plate, gold light glinting on the layers. Slow push-in.\nShot 2 (3-7s): Cut to a wooden desk by a window: a personalised 3D-printed couple figurine (exactly like the reference image, man in dark sweater, woman in cream sweater, round black base) is set down on a marble surface; camera orbits slowly around it, warm golden light.\nShot 3 (7-10s): Top-down shot on white marble: colourful 3D-printed name keychains (gold, light blue, white, anthracite letters with silver key rings, like the second reference image) slide into frame one after another.\nShot 4 (10-13s): Close-up of a hand placing a freshly printed anthracite plastic replacement part (a small gear / bracket) into a household appliance; it clicks perfectly into place.\nShot 5 (13-15s): Final hero shot: figurine, keychain and spare part arranged together on marble with a thin gold light sweep across the surface, camera slowly pulls back, soft bokeh. Gentle upbeat ambient soundtrack, subtle print and click sounds.",
+      "prompt_language": "en",
+      "reference_elements": [],
+      "resolution": "720p",
+      "speedramp": "auto",
+      "width": 720
+    },
+    "result_url": "https://d8j0ntlcm91z4.cloudfront.net/user_3L8WbhNUQYOhex3XpLqqT4Hpl72/hf_20261031_115411_736a9402-68ae-4ed2-be1a-e64129cb9e66.mp4",
+    "status": "completed",
+    "thumbnail_url": "https://cdn.higgsfield.ai/user_3L8WbhNUQYOhex3XpLqqT4Hpl72/hf_20261031_115411_736a9402-68ae-4ed2-be1a-e64129cb9e66_thumbnail.webp"
+  }
+]
