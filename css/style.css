@@ -573,3 +573,13 @@ details[open]{background:rgba(255,255,255,.72)}
 .backdrop--sortiment::before{background-image:url(../img/blur/fotolampe.jpg)}
 /* Lichtkreise: weiche Kante per Maske statt 70-px-Blur */
 .backdrop i{filter:none!important;-webkit-mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.5) 45%,transparent 100%);mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.5) 45%,transparent 100%)}
+
+/* Ansprechpartner */
+.team{display:grid;grid-template-columns:minmax(0,460px) minmax(0,1fr);gap:var(--s12);align-items:center}
+.team__media{margin:0;border-radius:22px;overflow:hidden;background:var(--tief);box-shadow:0 24px 60px -24px rgba(30,30,30,.45)}
+.team__media img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover}
+.team__kicker{font-family:var(--f-brand);font-weight:500;font-size:var(--t-xs);letter-spacing:.24em;text-transform:uppercase;color:var(--gold-text);margin:0 0 var(--s3)}
+.team__text h2{font-size:var(--t-2xl)}
+.team__role{font-family:var(--f-head);font-weight:600;font-size:var(--t-l);letter-spacing:.08em;text-transform:uppercase;color:var(--stein);margin:var(--s3) 0 var(--s6);padding-bottom:var(--s4);border-bottom:3px solid var(--gold);display:inline-block}
+.team__btns{display:flex;flex-wrap:wrap;gap:var(--s3);margin-top:var(--s8)}
+@media (max-width:900px){.team{grid-template-columns:1fr;gap:var(--s8)}.team__media{max-width:460px}}
