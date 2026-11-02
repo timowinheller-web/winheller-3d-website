@@ -168,6 +168,7 @@ button,a,label,input,select,summary{touch-action:manipulation}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
 body{background:var(--weiss);color:var(--anthrazit);font-family:var(--f-body);font-size:var(--t-m);line-height:1.6;margin:0;overflow-x:clip}
 img,svg,canvas{display:block;max-width:100%}
+img{height:auto}
 a{color:inherit}
 .wrap{max-width:1240px;margin:0 auto;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
 h1,h2,h3{font-family:var(--f-head);font-weight:700;text-transform:uppercase;line-height:.95;margin:0;text-wrap:balance;color:var(--tief);letter-spacing:-.005em}
